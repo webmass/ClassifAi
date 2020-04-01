@@ -1,0 +1,13 @@
+.confirmDialog {
+    margin-top: -100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.title {
+    margin-bottom: 10px;
+}
+.actionsWrapper {
+    padding-top: 20px;
+}

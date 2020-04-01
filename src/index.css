@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.react-confirm-alert-overlay {
+  z-index: 1200;
+}
+.react-confirm-alert-body-element #root {
+  transition-duration: 0.2s;
+  filter: blur(5px);
+}

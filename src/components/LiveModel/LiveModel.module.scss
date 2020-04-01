@@ -1,0 +1,38 @@
+$videoSize: 224px;
+
+.actionsWrapper {
+    overflow: auto;
+}
+.actions {
+    display: flex;
+    justify-content: space-evenly;
+    min-width: fit-content;
+}
+.container {
+    padding-top: 10px;
+    padding-bottom: 20px;
+    width: 90%;
+}
+.card {
+    margin-bottom: 15px;
+}
+.cardContent {
+    position: relative;
+}
+.cardFooter {
+    width: 100%;
+}
+.video {
+    border: 2px solid #cccccc;
+    width: $videoSize;
+    height: $videoSize;
+}
+.lottie {
+    width: $videoSize;
+    height: $videoSize;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+}
