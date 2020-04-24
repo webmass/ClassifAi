@@ -10,11 +10,12 @@ const ModelPublishBar = ({modelItem}) => {
     const {wallet} = useContext(AppContext);
     const handleConfirmedPublish = async (showResult) => {
         const dataset = TensorFlowService.getStorableKnnDataset();
-        const result = await ArweaveService.publishModel(modelItem, dataset);
-        if (result) {
+        const result = await ArweaveService.publishModel(modelItem, dataset)
+            .catch(reason => ({error: true, message: reason.message || reason.code}));
+        if (!result.error) {
             showResult('success', result.message);
         } else {
-            showResult('error', 'Could not publish :(');
+            showResult('error', 'Could not publish : ' + result.message);
         }
     };
     const handlePublish = () => DialogService.showPublish(modelItem.name, handleConfirmedPublish);

@@ -17,6 +17,7 @@ class ArweaveService {
             protocol: 'https',
             host: 'arweave.net',
             port: 443,
+            timeout: 20000
         });
         const wallet = await Database.getItem(DB_SETTINGS, 'wallet');
         if (wallet) {
@@ -75,9 +76,13 @@ class ArweaveService {
     };
 
     static postTransaction = async (transaction) => {
-        const result = await this.#arweave.transactions.post(transaction);
+        const result = await this.#arweave.transactions.post(transaction)
+            .catch(reason => {
+                // timeout can easily happen with large models, we take an optimistic approach
+                return reason.code === 'ECONNABORTED' ? {status: 200, message: 'OK'} : reason;
+            });
         const resultType = result.status >= 200 && result.status < 300 ? 'success' : 'error';
-        return {...result, transaction, resultType, message: result.data};
+        return {...result, transaction, resultType, message: result.data || 'error'};
     };
 
     static getStoredTransaction = async (arql) => {
@@ -144,57 +149,5 @@ class ArweaveService {
         return {...result, id: modelTransactionId};
     }
 }
-
-//
-// export const getPredictionsTxs = async (address) => {
-//     const txids = await arweave.arql({
-//         op: 'and',
-//         expr1: {
-//             op: 'equals',
-//             expr1: AR_DEFAULT_TAG.name,
-//             expr2: AR_DEFAULT_TAG.value,
-//         },
-//         expr2: {
-//             op: 'equals',
-//             expr1: 'coinbox-prediction',
-//             expr2: 'test2',
-//         },
-//     });
-//
-//     const txs = txids.map(async (txId) => arweave
-//         .transactions
-//         .get(txId));
-//
-//     return Promise.all(txs);
-// };
-//
-// export const getTimestampFromTxId = async (txId) => {
-//     const {status, confirmed} = await arweave
-//         .transactions
-//         .getStatus(txId);
-//     if (status !== 200) {
-//         console.error(`Block status (txId: "${txId}") is not OK`);
-//         return -1;
-//     }
-//     const {data} = await axios(`https://arweave.net/block/height/${confirmed.block_height}`);
-//     return data.timestamp;
-// };
-//
-// export const listPredictions = async (address, reduce) => {
-//     let txs = await getPredictionsTxs(address);
-//     const totalCount = txs.length;
-//     if (reduce && typeof reduce === 'function') {
-//         txs = reduce(txs);
-//     }
-//     const predictions = txs.map(async (tx) => ({
-//         ...JSON.parse(await arweave.transactions.getData(tx.id, {decode: true, string: true})),
-//         timestamp: await getTimestampFromTxId(tx.id),
-//         id: tx.id,
-//     }));
-//     return {
-//         totalCount,
-//         txs: await Promise.all(predictions),
-//     };
-// };
 
 export default ArweaveService;
