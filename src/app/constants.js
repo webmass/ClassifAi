@@ -21,6 +21,8 @@ export const DB_OBJECT_STORES = [
     {name: DB_MODELS, keyPath: 'id', autoIncrement: true},
     {name: DB_DATASETS, keyPath: 'modelId', autoIncrement: false}
 ];
+export const DB_INTRO_DONE_SETTING = 'introDone';
+export const DB_EXAMPLE_ADDED_SETTING = 'exampleAdded';
 // Arweave
 export const AR_DEFAULT_TAG = {name: 'webmass-app-name', value: 'permaweb-image-classifier--'};
 export const AR_MODEL_TAG_NAME = 'is-model';

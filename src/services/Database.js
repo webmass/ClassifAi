@@ -5,7 +5,7 @@ import {
     DB_NAME,
     DB_SETTINGS,
     DB_OBJECT_STORES,
-    DB_VERSION
+    DB_VERSION, DB_EXAMPLE_ADDED_SETTING
 } from 'app/constants';
 
 class Database {
@@ -28,10 +28,10 @@ class Database {
     }
 
     static async initExampleModel() {
-        const exampleAdded = await this.getItem(DB_SETTINGS, 'exampleAdded');
+        const exampleAdded = await this.getSettingItem(DB_EXAMPLE_ADDED_SETTING);
         if(!exampleAdded){
             await this.saveModelItem(DB_EXAMPLE_MODEL);
-            await this.saveItem(DB_SETTINGS, {name: 'exampleAdded', value: true});
+            await this.saveSettingItem({name: DB_EXAMPLE_ADDED_SETTING, value: true});
         }
     }
 
@@ -80,6 +80,11 @@ class Database {
             request.onerror = e => resolve(null);
         });
     };
+
+    static getSettings = () => Database.getAll(DB_SETTINGS);
+    static getSettingItem = key => Database.getItem(DB_SETTINGS, key);
+    static saveSettingItem = data => Database.saveItem(DB_SETTINGS, data);
+    static removeSettingItem = key => Database.removeItem(DB_SETTINGS, key);
 
     static getModels = () => Database.getAll(DB_MODELS);
     static getModelItem = key => Database.getItem(DB_MODELS, parseInt(key));

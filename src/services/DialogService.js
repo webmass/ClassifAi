@@ -6,6 +6,7 @@ import React from 'react';
 import DeleteDialog from 'components/Dialogs/DeleteDialog';
 import PublishDialog from 'components/Dialogs/PublishDialog';
 import TrainingDetailsDialog from 'components/Dialogs/TrainingDetailsDialog';
+import IntroDialog from 'components/Dialogs/IntroDialog';
 
 class DialogService {
     static show = (options) => confirmAlert(options);
@@ -36,6 +37,7 @@ class DialogService {
     static showDelete = (name, onConfirm) => this.showDialog(DeleteDialog, {name, onConfirm});
     static showPublish = (name, onConfirm) => this.showDialog(PublishDialog, {name, onConfirm});
     static showTrainingDetails = (counts) => this.showDialog(TrainingDetailsDialog, {counts});
+    static showIntro = () => this.showDialog(IntroDialog);
 }
 
 export default DialogService;

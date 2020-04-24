@@ -4,7 +4,7 @@ import { Add, Person, PersonOutline } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
 import Page from 'components/Page/Page';
 import styles from './Home.module.scss';
-import { ROUTES } from 'app/constants';
+import { DB_INTRO_DONE_SETTING, ROUTES } from 'app/constants';
 import ModelList from 'components/Model/ModelList/ModelList';
 import StyledButton from 'components/StyledButton/StyledButton';
 import AppContext from 'app/AppContext';
@@ -13,6 +13,9 @@ import ArweaveService from 'services/ArweaveService';
 import TopBar from 'components/TopBar/TopBar';
 import IconButton from '@material-ui/core/IconButton';
 import { goToAccount } from 'services/RoutingService';
+import DialogService from 'services/DialogService';
+import Button from '@material-ui/core/Button';
+import Database from 'services/Database';
 
 const Home = ({models}) => {
     const {wallet} = useContext(AppContext);
@@ -29,10 +32,20 @@ const Home = ({models}) => {
                     setCommunityModels(result.data)
                 }
             })
-            .catch(r => console.log(r))
+            .catch(() => setCommunityModels([]))
     };
 
     const handleAccount = () => goToAccount(history);
+    const handleIntro = () => {
+        DialogService.showIntro();
+        Database.saveSettingItem({name: DB_INTRO_DONE_SETTING, value: true});
+    };
+
+    useEffect(() => {
+        Database.getSettingItem(DB_INTRO_DONE_SETTING)
+            .then(result => !result ? handleIntro() : null)
+            .catch();
+    }, []);
 
     useEffect(() => {
         isMountedRef.current = true;
@@ -67,6 +80,9 @@ const Home = ({models}) => {
                     </Grid>
                     <Grid item xs={12}>
                         <StyledButton onClick={handleAdd} aria-label="add" startIcon={<Add/>}>Create a new model</StyledButton>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button size='small' color='primary' onClick={handleIntro}>Show introduction again</Button>
                     </Grid>
                 </Grid>
             </Container>
