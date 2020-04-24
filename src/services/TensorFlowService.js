@@ -16,6 +16,10 @@ class TensorFlowService {
         });
     };
 
+    static clear = () => {
+        this.#knnClassifier.clearAllClasses();
+    };
+
     static setKnnDataset = async (storedDataset) => {
         let dataset = {};
         Object.keys(storedDataset).forEach((key) => {
@@ -41,11 +45,24 @@ class TensorFlowService {
     static getStorableKnnDataset = () => {
         const knnDataset = this.#knnClassifier.getClassifierDataset();
         let storableDataset = {};
-        Object.keys(knnDataset).forEach((key) => {
-            let data = knnDataset[key].dataSync();
-            storableDataset[key] = Array.from(data);
+        Object.keys(knnDataset).forEach((category) => {
+            let data = knnDataset[category].dataSync();
+            storableDataset[category] = Array.from(data);
         });
         return storableDataset;
+    };
+
+    static getCategoriesCounts = () => {
+        return this.#knnClassifier.getClassExampleCount();
+    };
+
+    static getNbTeachedImages = () => {
+        const counts = this.getCategoriesCounts();
+        let nb = 0;
+        Object.keys(counts).forEach((category) => {
+            nb += counts[category];
+        });
+        return nb;
     };
 
     static downloadModel = (exportName = 'download') => {

@@ -11,6 +11,7 @@ const useStyles = makeStyles(() => ({
     },
     titleWrapper: {
         flexGrow: 1,
+        marginLeft: 20,
         overflow: 'hidden'
     },
     title: {
@@ -31,8 +32,8 @@ const TopBar = ({title, children, hasBackButton = true}) => {
 
     return (
         <div className={classes.root}>
-            <AppBar position="static">
-                <Toolbar>
+            <AppBar position="fixed">
+                <Toolbar disableGutters={true}>
                     {backButton}
                     <span className={classes.titleWrapper}>
                         <Typography variant="h6" className={classes.title}>

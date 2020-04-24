@@ -17,5 +17,6 @@ code {
 }
 .react-confirm-alert-body-element #root {
   transition-duration: 0.2s;
-  filter: blur(5px);
+  opacity: 0.3;
+  filter: blur(10px);
 }

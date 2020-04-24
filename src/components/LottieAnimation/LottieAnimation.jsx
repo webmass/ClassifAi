@@ -19,7 +19,7 @@ const LottieAnimation = ({
     }, [animationName, height, width, loop, autoplay, onComplete, rendererSettings]);
 
     return (
-        <div>
+        <div style={{width, height, display: 'inline-block'}}>
             {
                 animationData
                     ? (

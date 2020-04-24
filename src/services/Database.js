@@ -1,43 +1,37 @@
-const DB_NAME = 'permaweb-image-classifier';
-const SETTINGS = 'SETTINGS';
-const MODELS = 'MODELS';
-const DATASETS = 'DATASETS';
-
-const objectStoresConfig = [
-    {name: SETTINGS, keyPath: 'name', autoIncrement: false},
-    {name: MODELS, keyPath: 'id', autoIncrement: true},
-    {name: DATASETS, keyPath: 'model_id', autoIncrement: false}
-];
-
-const EXAMPLE_MODEL = {
-    id: 1, name: 'Example : Thumbs', description: 'Up Or Down ?', categories: [
-        '👍', 'neutral', '👎'
-    ]
-};
+import {
+    DB_DATASETS,
+    DB_EXAMPLE_MODEL,
+    DB_MODELS,
+    DB_NAME,
+    DB_SETTINGS,
+    DB_OBJECT_STORES,
+    DB_VERSION
+} from 'app/constants';
 
 class Database {
     static DB;
 
     static init() {
-        const request = indexedDB.open(DB_NAME, 1);
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
         request.onupgradeneeded = (event) => {
             const upgradeDb = event.target.result;
-            objectStoresConfig.forEach(config => Database.createObjectStoreIfNotExist(upgradeDb, config.name, config.keyPath, config.autoIncrement));
+            DB_OBJECT_STORES.forEach(config => Database.createObjectStoreIfNotExist(upgradeDb, config.name, config.keyPath, config.autoIncrement));
         };
         return new Promise((resolve, reject) => {
             request.onsuccess = async e => {
-                resolve(Database.DB = request.result);
+                Database.DB = request.result;
                 await this.initExampleModel();
+                resolve();
             };
             request.onerror = async e => reject(e);
         });
     }
 
     static async initExampleModel() {
-        const exampleAdded = await this.getItem(SETTINGS, 'exampleAdded');
+        const exampleAdded = await this.getItem(DB_SETTINGS, 'exampleAdded');
         if(!exampleAdded){
-            await this.saveModelItem(EXAMPLE_MODEL);
-            await this.saveItem(SETTINGS, {name: 'exampleAdded', value: true});
+            await this.saveModelItem(DB_EXAMPLE_MODEL);
+            await this.saveItem(DB_SETTINGS, {name: 'exampleAdded', value: true});
         }
     }
 
@@ -87,15 +81,15 @@ class Database {
         });
     };
 
-    static getModels = () => Database.getAll(MODELS);
-    static getModelItem = key => Database.getItem(MODELS, parseInt(key));
-    static saveModelItem = data => Database.saveItem(MODELS, data);
-    static removeModelItem = key => Database.removeItem(MODELS, parseInt(key));
+    static getModels = () => Database.getAll(DB_MODELS);
+    static getModelItem = key => Database.getItem(DB_MODELS, parseInt(key));
+    static saveModelItem = data => Database.saveItem(DB_MODELS, data);
+    static removeModelItem = key => Database.removeItem(DB_MODELS, parseInt(key));
 
-    static getModelDatasets = () => Database.getAll(DATASETS);
-    static getModelDatasetItem = key => Database.getItem(DATASETS, parseInt(key));
-    static saveModelDatasetItem = data => Database.saveItem(DATASETS, data);
-    static removeModelDatasetItem = key => Database.removeItem(DATASETS, parseInt(key));
+    static getModelDatasets = () => Database.getAll(DB_DATASETS);
+    static getModelDatasetItem = key => Database.getItem(DB_DATASETS, parseInt(key));
+    static saveModelDatasetItem = data => Database.saveItem(DB_DATASETS, data);
+    static removeModelDatasetItem = key => Database.removeItem(DB_DATASETS, parseInt(key));
 };
 
 export default Database;

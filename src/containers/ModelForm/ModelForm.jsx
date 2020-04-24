@@ -5,12 +5,12 @@ import Page from 'components/Page/Page';
 import StyledTextField from 'components/StyledTextField/StyledTextField';
 import CategoryList from 'components/Category/CategoryList/CategoryList';
 import CategoryAdder from 'components/Category/CategoryAdder/CategoryAdder';
-import Database from 'services/Database';
 import TopBar from 'components/TopBar/TopBar';
 import styles from './ModelForm.module.scss';
 import Message from 'components/Message/Message';
 import ModelDeleter from 'components/Model/ModelDeleter/ModelDeleter';
 import ModelSaveBar from 'components/Model/ModelSaveBar/ModelSaveBar';
+import ModelService from 'services/ModelService';
 
 const initialState = {name: '', description: '', categories: []};
 
@@ -40,15 +40,15 @@ const ModelForm = () => {
 
     useEffect(() => {
         if (id && !modelItem.id) {
-            const handleDatabaseResponse = dbModelItem => {
+            const handleResponse = result => {
                 if (!isMountedRef.current) return;
-                if (dbModelItem) {
+                if (result) {
                     setHasError(false);
-                    setModelItem(dbModelItem);
+                    setModelItem(result);
                 } else handleError();
             };
-            Database.getModelItem(id)
-                .then(handleDatabaseResponse)
+            ModelService.getModelItem(id)
+                .then(handleResponse)
                 .catch(handleError);
         }
         return () => isMountedRef.current = false;
@@ -56,8 +56,8 @@ const ModelForm = () => {
 
     return (
         <Page>
-            <TopBar title={modelItem.name}>
-                {modelItem.id ? <ModelDeleter modelItem={modelItem}/> : null}
+            <TopBar title='Model form'>
+                {modelItem.id && !modelItem.isCommunityModel ? <ModelDeleter modelItem={modelItem}/> : null}
             </TopBar>
             {hasError ? <Message.Error/> : null}
             <form ref={formRef} className={styles.form} noValidate autoComplete="off">

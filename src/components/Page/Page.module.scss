@@ -1,6 +1,9 @@
 .Page {
     height: 100vh;
     width: 100vw;
+    overflow-y: auto;
+    margin-top: 56px;
+    margin-bottom: 56px;
 }
 .centered {
     display: flex;
