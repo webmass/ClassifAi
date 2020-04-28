@@ -79,7 +79,7 @@ class ArweaveService {
         const result = await this.#arweave.transactions.post(transaction)
             .catch(reason => {
                 // timeout can easily happen with large models, we take an optimistic approach
-                return reason.code === 'ECONNABORTED' ? {status: 200, message: 'OK'} : reason;
+                return reason.code === 'ECONNABORTED' ? {status: 200, data: 'OK'} : reason;
             });
         const resultType = result.status >= 200 && result.status < 300 ? 'success' : 'error';
         return {...result, transaction, resultType, message: result.data || 'error'};

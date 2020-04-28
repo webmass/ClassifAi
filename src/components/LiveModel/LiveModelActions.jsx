@@ -15,7 +15,7 @@ import LottieAnimation from 'components/LottieAnimation/LottieAnimation';
 import { T_MODEL_ITEM } from 'types';
 import PropTypes from 'prop-types';
 
-const LiveModelActions = ({modelItem, webcam, updateModelItem}) => {
+const LiveModelActions = ({modelItem, isDatasetReady, webcam, updateModelItem}) => {
     const [nbTraining, setNbTraining] = useState(modelItem.nbTrainings);
     const history = useHistory();
 
@@ -67,6 +67,7 @@ const LiveModelActions = ({modelItem, webcam, updateModelItem}) => {
     </Typography>;
 
     if (modelItem.isCommunityModel) {
+        if(!isDatasetReady) return null;
         const handleEdit = () => history.push({pathname: getModelFormRoute(modelItem.id), state: {details: modelItem}});
         return (
             <React.Fragment>
@@ -93,6 +94,7 @@ const LiveModelActions = ({modelItem, webcam, updateModelItem}) => {
 
 LiveModelActions.propTypes = {
     modelItem: T_MODEL_ITEM,
+    isDatasetReady: PropTypes.bool.isRequired,
     webcam: PropTypes.object.isRequired,
     updateModelItem: PropTypes.func.isRequired
 };

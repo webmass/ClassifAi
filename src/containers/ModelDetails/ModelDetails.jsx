@@ -28,7 +28,7 @@ const ModelDetails = () => {
         setHasError(true);
     };
 
-    const handleEdit = () => history.push({pathname: getModelFormRoute(id), state: {details: modelItem}});
+    const handleEdit = () => history.push({pathname: getModelFormRoute(id), state: {from: 'details'}});
 
     useEffect(() => {
         const handleResponse = result => {

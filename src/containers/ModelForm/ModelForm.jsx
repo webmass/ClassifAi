@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Typography, Grid } from '@material-ui/core';
 import Page from 'components/Page/Page';
 import StyledTextField from 'components/StyledTextField/StyledTextField';
@@ -17,11 +17,10 @@ const initialState = {name: '', description: '', categories: []};
 
 const ModelForm = () => {
     let {id} = useParams();
-    let history = useHistory();
     const formRef = useRef(null);
     const [isFormValid, setIsFormValid] = useState(false);
     const isMountedRef = useRef(true);
-    const [modelItem, setModelItem] = useState(id && history.location.state ? history.location.state.details : initialState);
+    const [modelItem, setModelItem] = useState(initialState);
     const [renamedCategories, setRenamedCategories] = useState({});
     const [modelContext] = useState({setModelItem, setRenamedCategories});
     modelContext.modelItem = modelItem;

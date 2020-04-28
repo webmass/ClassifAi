@@ -18,7 +18,7 @@ export const DB_SETTINGS = 'SETTINGS';
 export const DB_MODELS = 'MODELS';
 export const DB_DATASETS = 'DATASETS';
 export const DB_EXAMPLE_MODEL = {
-    id: 1, name: 'Example : Thumbs', description: 'Up Or Down ?', categories: [
+    id: 1, name: 'Example : Thumbs', description: 'Up Or Down ?', nbTrainings: 0, categories: [
         '👍', 'neutral', '👎'
     ]
 };
@@ -30,7 +30,7 @@ export const DB_OBJECT_STORES = [
 export const DB_INTRO_DONE_SETTING = 'introDone';
 export const DB_EXAMPLE_ADDED_SETTING = 'exampleAdded';
 // Arweave
-export const AR_DEFAULT_TAG = {name: 'webmass-app-name', value: 'permaweb-image-classifier--'};
+export const AR_DEFAULT_TAG = {name: 'webmass-app-name', value: 'permaweb-image-classifier-v1'};
 export const AR_MODEL_TAG_NAME = 'is-model';
 export const AR_MODEL_DATASET_TAG_NAME = 'is-model-dataset';
 export const AR_MODEL_NAME_TAG_NAME = 'model-name';

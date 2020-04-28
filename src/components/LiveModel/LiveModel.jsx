@@ -13,6 +13,7 @@ const LiveModel = ({modelItem}) => {
     const {id, description, isCommunityModel} = modelItem;
     const [hasCameraError, setHasCameraError] = useState(false);
     const [isWaitingCamera, setIsWaitingCamera] = useState(true);
+    const [isDatasetReady, setIsDatasetReady] = useState(false);
     const [result, setResult] = useState({label: '...'});
     const classifier = TensorFlowService.getKnnClassifier();
     const videoRef = useRef(null);
@@ -32,13 +33,27 @@ const LiveModel = ({modelItem}) => {
     }, []);
 
     useEffect(() => {
+        const handleRestoreFailed = () => {
+            if(isMountedRef.current) {
+                setResult({
+                    label: isCommunityModel ? 'Training data still publishing...' : 'hmm...Teach me first !'
+                })
+            }
+        };
+        const handleRestoreSuccess = (datasetItem) => {
+            if(datasetItem && isMountedRef.current){
+                setIsDatasetReady(true);
+                TensorFlowService.setKnnDataset(datasetItem.data);
+            } else {
+                handleRestoreFailed();
+            }
+            return datasetItem;
+        };
         const restoreTeachings = () => {
             TensorFlowService.clear();
             ModelService.getModelDatasetItem(id)
-                .then(datasetItem => TensorFlowService.setKnnDataset(datasetItem.data))
-                .catch(() => setResult({
-                    label: isCommunityModel ? 'Training data still publishing...' : 'hmm...Teach me first !'
-                }));
+                .then(datasetItem => handleRestoreSuccess(datasetItem))
+                .catch(handleRestoreFailed);
         };
         const workWithCamera = async () => {
             await initWebcam();
@@ -81,7 +96,7 @@ const LiveModel = ({modelItem}) => {
                             <Button color="primary" onClick={initWebcam}>Retry</Button>
                         </Message.Error>
                         :
-                        <LiveModelActions modelItem={modelItem} webcam={webcam}/>
+                        <LiveModelActions modelItem={modelItem} webcam={webcam} isDatasetReady={isDatasetReady}/>
                 }
             </Card>
         </div>

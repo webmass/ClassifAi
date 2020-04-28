@@ -32,7 +32,7 @@ class ModelService {
         await Database.saveModelDatasetItem(dataset);
         return {nbTrainingsUpdateNeeded};
     };
-    static updatenbTrainings = async (modelItem, updateModelItem) => {
+    static updateNbTrainings = async (modelItem, updateModelItem) => {
         const datasetItem = await Database.getModelDatasetItem(modelItem.id);
         TensorFlowService.clear();
         TensorFlowService.setKnnDataset(datasetItem.data);
