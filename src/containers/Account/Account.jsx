@@ -15,17 +15,16 @@ import { ExitToApp } from '@material-ui/icons';
 
 const Account = () => {
     const history = useHistory();
-    const appContext = useContext(AppContext);
-    const {wallet} = useContext(AppContext);
+    const {wallet, setWallet} = useContext(AppContext);
 
     const handleLogOut = async () => {
         await Database.removeItem(DB_SETTINGS, 'wallet');
-        appContext.setWallet(null);
+        setWallet(null);
         goHome(history);
     };
 
     return (
-        <Page>
+        <Page hasTopBar={true}>
             <TopBar title='Log In / out'/>
             <Container className={styles.container}>
                 <Grid container spacing={4}>
