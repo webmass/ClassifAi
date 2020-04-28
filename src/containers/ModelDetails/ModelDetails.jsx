@@ -11,6 +11,7 @@ import { getModelFormRoute } from 'services/RoutingService';
 import ModelPublishBar from 'components/Model/ModelPublishBar/ModelPublishBar';
 import ModelService from 'services/ModelService';
 import AppContext from 'app/AppContext';
+import ModelContext from 'components/Model/ModelContext';
 
 const ModelDetails = () => {
     const {id} = useParams();
@@ -18,9 +19,14 @@ const ModelDetails = () => {
     const {wallet} = useContext(AppContext);
     const isMountedRef = useRef(true);
     const [modelItem, setModelItem] = useState(history.location.state ? history.location.state.details : {});
+    const [modelContext] = useState({setModelItem});
+    modelContext.modelItem = modelItem;
     const [hasError, setHasError] = useState(false);
 
-    const handleError = () => setHasError(true);
+    const handleError = () => {
+        if (!isMountedRef.current) return;
+        setHasError(true);
+    };
 
     const handleEdit = () => history.push({pathname: getModelFormRoute(id), state: {details: modelItem}});
 
@@ -44,12 +50,14 @@ const ModelDetails = () => {
     else if (!modelItem.id) return <Message.Loading/>;
 
     return (
-        <Page>
+        <Page hasBottomBar={true}>
             <TopBar title={modelItem.name}>
                 {modelItem.isCommunityModel ? null : <IconButton onClick={handleEdit}><Edit/></IconButton>}
             </TopBar>
             <div className={styles.container}>
-                <LiveModel modelItem={modelItem}/>
+                <ModelContext.Provider value={modelContext}>
+                    <LiveModel modelItem={modelItem}/>
+                </ModelContext.Provider>
             </div>
             {modelItem.isCommunityModel || !wallet ? null : <ModelPublishBar modelItem={modelItem}/>}
         </Page>

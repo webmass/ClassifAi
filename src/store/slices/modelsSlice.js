@@ -13,7 +13,7 @@ const modelsSlice = RTK.createSlice({
                 model.name = payload.name;
                 model.description = payload.description;
                 model.categories = payload.categories;
-                model.nbTeachedImages = payload.nbTeachedImages;
+                model.nbTrainings = payload.nbTrainings;
             }
         },
         updateModels: (state, {payload}) => state.splice().concat(payload),

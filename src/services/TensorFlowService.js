@@ -20,7 +20,7 @@ class TensorFlowService {
         this.#knnClassifier.clearAllClasses();
     };
 
-    static setKnnDataset = async (storedDataset) => {
+    static setKnnDataset = storedDataset => {
         let dataset = {};
         Object.keys(storedDataset).forEach((key) => {
             dataset[key] = tf.tensor(storedDataset[key], [storedDataset[key].length / 1024, 1024]);
@@ -37,8 +37,7 @@ class TensorFlowService {
         const activation = this.#model.infer(image, 'conv_preds');
         const classifications = await this.#knnClassifier.predictClass(activation).catch(() => []);
         return {
-            label: classifications.label,
-            probability: classifications.confidences[classifications.label]
+            label: classifications.label
         }
     };
 
@@ -56,7 +55,7 @@ class TensorFlowService {
         return this.#knnClassifier.getClassExampleCount();
     };
 
-    static getNbTeachedImages = () => {
+    static getNbTrainings = () => {
         const counts = this.getCategoriesCounts();
         let nb = 0;
         Object.keys(counts).forEach((category) => {

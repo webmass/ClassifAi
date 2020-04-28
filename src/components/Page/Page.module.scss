@@ -1,12 +1,18 @@
+$bar-height: 56px;
+
 .Page {
     height: 100vh;
     width: 100vw;
     overflow-y: auto;
-    margin-top: 56px;
-    margin-bottom: 56px;
 }
 .centered {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.withTopBar {
+    padding-top: $bar-height;
+}
+.withBottomBar {
+    padding-bottom: $bar-height;
 }

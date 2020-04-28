@@ -6,21 +6,23 @@ const StyledTextField = withStyles({
     root: {
         color: 'white',
         borderColor: 'white',
-        '& label, & button, & input, & .MuiIconButton-label, textarea': {
-            color: 'white',
-        },
         '& .Mui-disabled': {
             '& .MuiIconButton-label': {
                 color: 'grey'
             }
         },
-        '& .MuiOutlinedInput-root': {
+        '& .MuiOutlinedInput-root, & .MuiOutlinedInput-root:hover': {
             '& fieldset': {
                 borderColor: 'white',
             },
         },
     },
-})(({ classes, color, ...other }) => (
-    <TextField className={classes.root} {...other} />
+    input: {
+        color: 'white'
+    }
+})(({ classes, InputProps = {}, ...other }) => (
+    <TextField style={{color: 'white'}} className={classes.root} {...other} InputProps={{
+        className: classes.input, ...InputProps
+    }}/>
 ));
 export default StyledTextField;

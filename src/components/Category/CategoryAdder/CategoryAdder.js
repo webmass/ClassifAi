@@ -1,28 +1,34 @@
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { Add } from '@material-ui/icons';
 import StyledTextField from 'components/StyledTextField/StyledTextField';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
+import ModelContext from 'components/Model/ModelContext';
 
-const CategoryAdder = ({categories, updateCategories}) => {
+const CategoryAdder = () => {
+    const {modelItem, setModelItem} = useContext(ModelContext);
     const [hasCategoryError, setHasCategoryError] = useState(false);
     const [canAdd, setCanAdd] = useState(false);
     const [newCategory, setNewCategory] = useState('');
+    const categories = modelItem.categories;
 
-    const handleAdd = () => {
+    const scrollIntoView = (event) => event.target.scrollIntoView();
+
+    const handleAdd = (event) => {
         if(!canAdd) return;
         const newCategoryTrimmed = newCategory.trim();
-        updateCategories([...categories, newCategoryTrimmed]);
+        setModelItem({...modelItem, categories: [...categories, newCategoryTrimmed]});
         setNewCategory('');
+        scrollIntoView(event);
     };
 
     const handleCategoryEnter = (event) => {
-        if (event.key === 'Enter') handleAdd();
+        if (event.key === 'Enter') handleAdd(event);
     };
 
     const handleChange = (setter, event) => {
         setter(event.target.value);
-        if (categories.find(category => category === event.target.value.trim())) {
+        if (categories.find(category => category.toLowerCase() === event.target.value.toLowerCase().trim())) {
             setHasCategoryError(true);
             return;
         }
@@ -33,6 +39,7 @@ const CategoryAdder = ({categories, updateCategories}) => {
 
     return (
         <StyledTextField
+            onFocus={scrollIntoView}
             value={newCategory}
             error={hasCategoryError}
             helperText={hasCategoryError ? 'This category already exists' : null}

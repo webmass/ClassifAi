@@ -9,20 +9,27 @@ import { useHistory } from 'react-router-dom';
 import ModelService from 'services/ModelService';
 import DialogService from 'services/DialogService';
 
-const ModelSaveBar = ({isFormValid, modelItem, updateModelItem, addModelItem}) => {
+const ModelSaveBar = ({isFormValid, modelItem, renamedCategories, updateModelItem, addModelItem}) => {
     const history = useHistory();
-
     const [isSaving, setIsSaving] = useState(false);
+
+    const handleRenamedCategories = async (savedModel, renamedCategories) => {
+        if(!Object.keys(renamedCategories).length) return;
+        const result = await ModelService.renameModelDatasetCategories(savedModel.id, renamedCategories);
+        if(result && result.nbTrainingsUpdateNeeded) {
+            await ModelService.updateNbTrainings(savedModel, updateModelItem);
+        }
+    };
 
     const save = async () => {
         let saveType;
         setIsSaving(true);
         const modelToSaveLocally = {
             ...modelItem,
-            nbTeachedImages: modelItem.nbTeachedImages || 0,
+            nbTrainings: modelItem.nbTrainings || 0,
             isCommunityModel: false
         };
-        if(modelItem.isCommunityModel){
+        if (modelItem.isCommunityModel) {
             delete modelToSaveLocally.id;
             modelToSaveLocally.parentId = modelItem.id;
         }
@@ -31,18 +38,19 @@ const ModelSaveBar = ({isFormValid, modelItem, updateModelItem, addModelItem}) =
             updateModelItem(savedModel);
             saveType = 'update';
         } else {
-            if(savedModel.parentId) await ModelService.saveCommunityDatasetToLocal(savedModel.parentId, savedModel.id);
+            if (savedModel.parentId) await ModelService.saveCommunityDatasetToLocal(savedModel.parentId, savedModel.id);
             addModelItem(savedModel);
             saveType = 'create';
         }
+        await handleRenamedCategories(savedModel, renamedCategories);
         return {savedModel, saveType};
     };
 
     const handleSaveSuccess = ({savedModel, saveType}) => {
         setIsSaving(false);
-        if(saveType === 'create'){
+        if (saveType === 'create') {
             goHome(history);
-            history.push({pathname: getModelDetailsRoute(savedModel.id), state: {details: savedModel}});
+            history.push({pathname: getModelDetailsRoute(savedModel.id)});
         } else {
             goBack(history);
         }

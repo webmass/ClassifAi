@@ -9,6 +9,10 @@ const useStyles = makeStyles(() => ({
     root: {
         flexGrow: 1,
     },
+    bar: {
+        minHeight: 56,
+        height: 56
+    },
     titleWrapper: {
         flexGrow: 1,
         marginLeft: 20,
@@ -22,7 +26,7 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-const TopBar = ({title, children, hasBackButton = true}) => {
+const TopBar = ({title, position = 'fixed', children, hasBackButton = true}) => {
     let history = useHistory();
     const classes = useStyles();
 
@@ -32,15 +36,19 @@ const TopBar = ({title, children, hasBackButton = true}) => {
 
     return (
         <div className={classes.root}>
-            <AppBar position="fixed">
-                <Toolbar disableGutters={true}>
+            <AppBar position={position} className={classes.bar}>
+                <Toolbar disableGutters={true} className={classes.bar}>
                     {backButton}
-                    <span className={classes.titleWrapper}>
-                        <Typography variant="h6" className={classes.title}>
-                            {title}
-                        </Typography>
-                    </span>
-                    <span>{children}</span>
+                    {
+                        title ?
+                            <span className={classes.titleWrapper}>
+                                <Typography variant="h6" className={classes.title}>
+                                    {title}
+                                </Typography>
+                            </span>
+                            : null
+                    }
+                    {children}
                 </Toolbar>
             </AppBar>
         </div>

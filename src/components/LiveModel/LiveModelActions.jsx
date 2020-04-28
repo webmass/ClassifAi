@@ -14,33 +14,27 @@ import List from '@material-ui/core/List';
 import LottieAnimation from 'components/LottieAnimation/LottieAnimation';
 
 const LiveModelActions = ({modelItem, webcam, updateModelItem}) => {
-    const [nbTeachedImages, setNbTeachedImages] = useState(modelItem.nbTeachedImages);
-    let history = useHistory();
-    if (modelItem.isCommunityModel) {
-        const handleEdit = () => history.push({pathname: getModelFormRoute(modelItem.id), state: {details: modelItem}});
-        return (
-            <React.Fragment>
-                <Typography variant='body1' gutterBottom={true}>
-                    This is a Community Model, you can save it to your models if you want to modify it.
-                </Typography>
-                <Button color='primary' onClick={handleEdit}>Save to my models</Button>
-            </React.Fragment>
-        )
-    }
+    const [nbTraining, setNbTraining] = useState(modelItem.nbTrainings);
+    const history = useHistory();
+
+    const refreshTrainingInfo = async () => {
+        const updatedData = {...modelItem, nbTrainings: TensorFlowService.getNbTrainings()};
+        setNbTraining(updatedData.nbTrainings);
+        updateModelItem(updatedData);
+        await Database.saveModelItem(updatedData);
+    };
 
     const handleCapture = async (classId) => {
         const img = await webcam.current.capture();
         await TensorFlowService.trainCategory(classId, img);
-        const updatedData = {...modelItem, nbTeachedImages: TensorFlowService.getNbTeachedImages()};
-        setNbTeachedImages(updatedData.nbTeachedImages);
-        updateModelItem(updatedData);
-        await Database.saveModelItem(updatedData);
+        await refreshTrainingInfo();
         await Database.saveModelDatasetItem({modelId: modelItem.id, data: TensorFlowService.getStorableKnnDataset()});
         img.dispose();
         await tf.nextFrame();
     };
 
     const handleTeachingsDetails = () => {
+        if(!nbTraining) return;
         const categoriesCounts = TensorFlowService.getCategoriesCounts();
         const counts = Object.keys(categoriesCounts)
             .map(category => <ListItem key={category}>- {category} : {categoriesCounts[category]}</ListItem>);
@@ -66,9 +60,21 @@ const LiveModelActions = ({modelItem, webcam, updateModelItem}) => {
 
     const trainingInfo = <Typography variant='body2' gutterBottom={true}>
         <Link onClick={handleTeachingsDetails}>
-            Trained with {nbTeachedImages} images
+            {nbTraining ? `Trained with ${nbTraining} images` : 'Not trained yet'}
         </Link>
     </Typography>;
+
+    if (modelItem.isCommunityModel) {
+        const handleEdit = () => history.push({pathname: getModelFormRoute(modelItem.id), state: {details: modelItem}});
+        return (
+            <React.Fragment>
+                <Typography variant='body1' gutterBottom={true}>
+                    This is a Community Model, you can save it to your models if you want to modify it.
+                </Typography>
+                <Button color='primary' onClick={handleEdit}>Save to my models</Button>
+            </React.Fragment>
+        )
+    }
 
     return (
         <div>
@@ -77,7 +83,7 @@ const LiveModelActions = ({modelItem, webcam, updateModelItem}) => {
                 <CardActions className={styles.actions}>
                     {buttons}
                 </CardActions>
-                {nbTeachedImages ? trainingInfo : null}
+                {trainingInfo}
             </div>
         </div>
     )

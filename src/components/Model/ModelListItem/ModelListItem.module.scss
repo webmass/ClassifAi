@@ -1,0 +1,11 @@
+.itemContainer {
+    text-align: left;
+    background: white;
+    padding: 5px 20px 5px 20px;
+    border-bottom: 1px solid #cccccc;
+    transition-duration: 200ms;
+    cursor: pointer;
+    &:hover {
+        box-shadow: #3f51b580 0 0 2px 2px inset;
+    }
+}
