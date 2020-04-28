@@ -4,15 +4,17 @@ import Home from 'containers/Home/Home';
 import NotFoundPage from 'containers/NotFoundPage/NotFoundPage';
 import ModelDetails from 'containers/ModelDetails/ModelDetails';
 import ModelForm from 'containers/ModelForm/ModelForm';
-import { getModelDetailsRoute, getModelFormRoute } from 'services/RoutingService';
+import { getModelDetailsRoute, getModelFormRoute, getModelSearchRoute } from 'services/RoutingService';
 import { ROUTES } from './constants';
 import Account from 'containers/Account/Account';
+import ModelSearch from 'containers/ModelSearch/ModelSearch';
 
 const Routes = () => (
     <Switch>
         <Route exact path="/" component={Home}/>
         <Route path={ROUTES.HOME} component={Home} />
         <Route path={ROUTES.ACCOUNT} component={Account} />
+        <Route path={getModelSearchRoute(':searchType')} component={ModelSearch} />
         <Route path={getModelDetailsRoute(':id')} component={ModelDetails} />
         <Route path={getModelFormRoute(':id')} component={ModelForm} />
         <Route path={getModelFormRoute()} component={ModelForm} />

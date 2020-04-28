@@ -1,10 +1,12 @@
 import * as RTK from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import modelsReducer, { updateModels } from 'store/slices/modelsSlice';
+import searchReducer from 'store/slices/searchSlice';
 import Database from 'services/Database';
 
 const rootReducer = combineReducers({
-    models: modelsReducer
+    models: modelsReducer,
+    lastSearchValue: searchReducer
 });
 
 const storeConfig = RTK.configureStore({

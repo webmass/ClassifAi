@@ -5,3 +5,4 @@ export const goHome = (history, isReplace = false) => history[isReplace ? 'repla
 export const goToAccount = (history) => history.push(ROUTES.ACCOUNT);
 export const getModelDetailsRoute = id => `${ROUTES.MODEL_DETAILS}/${id}`;
 export const getModelFormRoute = id => `${ROUTES.MODEL_FORM}${id ? '/' + id : ''}`;
+export const getModelSearchRoute = searchType => `${ROUTES.SEARCH}/${searchType}`;

@@ -3,7 +3,13 @@ export const ROUTES = {
     HOME: '/home',
     MODEL_DETAILS: '/model_details',
     MODEL_FORM: '/model_form',
-    ACCOUNT: '/account'
+    ACCOUNT: '/account',
+    SEARCH: '/search'
+};
+export const SEARCH_TYPES = {
+    key: 'searchType',
+    myModels: 'myModels',
+    community: 'community'
 };
 // DB
 export const DB_NAME = 'permaweb-image-classifier';
