@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import StyledTextField from 'components/StyledTextField/StyledTextField';
 import ModelContext from 'components/Model/ModelContext';
+import PropTypes from 'prop-types';
 
 const CategoryListItem = ({category}) => {
     const {modelItem, setModelItem, renamedCategories, setRenamedCategories} = useContext(ModelContext);
@@ -56,6 +57,10 @@ const CategoryListItem = ({category}) => {
     } else {
         return <Typography onClick={handleOpenEditMode}>- {category}</Typography>
     }
+};
+
+CategoryListItem.propTypes = {
+    category: PropTypes.string.isRequired
 };
 
 export default CategoryListItem;

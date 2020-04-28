@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from 'components/Dialogs/Dialogs.module.scss';
+import { T_CHILDREN } from 'types';
 
 const SimpleDialog = ({children}) => {
     return (
@@ -7,6 +8,10 @@ const SimpleDialog = ({children}) => {
             {children}
         </div>
     )
+};
+
+SimpleDialog.propTypes = {
+    children: T_CHILDREN,
 };
 
 export default SimpleDialog;

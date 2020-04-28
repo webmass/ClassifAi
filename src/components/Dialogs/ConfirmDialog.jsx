@@ -3,6 +3,8 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import LottieAnimation from 'components/LottieAnimation/LottieAnimation';
 import SimpleDialog from 'components/Dialogs/SimpleDialog';
+import PropTypes from 'prop-types';
+import { T_ANIMATION, T_CHILDREN } from 'types';
 
 const defaultSuccessAnimationOptions = {animationName: 'checkmark', width: 100, height: 100};
 const defaultLoadingAnimationOptions = {animationName: 'progress-bar', width: 100, height: 100};
@@ -70,6 +72,19 @@ const ConfirmDialog = ({
             {buttons}
         </SimpleDialog>
     );
+};
+
+ConfirmDialog.propTypes = {
+    title: PropTypes.string,
+    children: T_CHILDREN,
+    onClose: PropTypes.func.isRequired,
+    onConfirm: PropTypes.func.isRequired,
+    yesLabel: PropTypes.string,
+    noLabel: PropTypes.string,
+    initialAnimationOptions: T_ANIMATION,
+    loadingAnimationOptions: T_ANIMATION,
+    errorAnimationOptions: T_ANIMATION,
+    successAnimationOptions: T_ANIMATION,
 };
 
 export default ConfirmDialog;

@@ -5,6 +5,7 @@ import AppContext from 'app/AppContext';
 import ArweaveService from 'services/ArweaveService';
 import TensorFlowService from 'services/TensorFlowService';
 import DialogService from 'services/DialogService';
+import { T_MODEL_ITEM } from 'types';
 
 const ModelPublishBar = ({modelItem}) => {
     const {wallet} = useContext(AppContext);
@@ -27,6 +28,10 @@ const ModelPublishBar = ({modelItem}) => {
             </Toolbar>
         </AppBar>
     )
+};
+
+ModelPublishBar.propTypes = {
+    modelItem: T_MODEL_ITEM.isRequired
 };
 
 export default ModelPublishBar;

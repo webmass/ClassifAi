@@ -2,6 +2,7 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { Link } from '@material-ui/core';
 import ConfirmDialog from 'components/Dialogs/ConfirmDialog';
+import PropTypes from 'prop-types';
 
 const PublishDialog = ({name, onClose, onConfirm}) => {
     const publishAnimationOptions = {animationName: 'publish', width: 150, height: 150, loop: true};
@@ -27,6 +28,12 @@ const PublishDialog = ({name, onClose, onConfirm}) => {
             </Typography>
         </ConfirmDialog>
     );
+};
+
+PublishDialog.propTypes = {
+    name: PropTypes.string.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onConfirm: PropTypes.func.isRequired,
 };
 
 export default PublishDialog;

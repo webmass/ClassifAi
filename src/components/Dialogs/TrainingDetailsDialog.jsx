@@ -5,6 +5,7 @@ import LottieAnimation from 'components/LottieAnimation/LottieAnimation';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
 
 const TrainingDetailsDialog = ({counts, onClose}) => {
     const listItems = Object.keys(counts)
@@ -24,6 +25,11 @@ const TrainingDetailsDialog = ({counts, onClose}) => {
             </div>
         </SimpleDialog>
     );
+};
+
+TrainingDetailsDialog.propTypes = {
+    counts: PropTypes.number.isRequired,
+    onClose: PropTypes.func.isRequired,
 };
 
 export default TrainingDetailsDialog;

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import LottieAnimation from 'components/LottieAnimation/LottieAnimation';
 import styles from './Message.module.scss'
 import Typography from '@material-ui/core/Typography';
+import { T_CHILDREN } from 'types';
 
 const MessageContent = ({type, animationName, height, width, loop, children}) => {
     return (
@@ -53,10 +54,7 @@ Message.propTypes = {
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     loop: PropTypes.bool,
-    children: PropTypes.oneOfType([
-        PropTypes.arrayOf(PropTypes.node),
-        PropTypes.node,
-    ]),
+    children: T_CHILDREN,
 };
 
 export default Message;

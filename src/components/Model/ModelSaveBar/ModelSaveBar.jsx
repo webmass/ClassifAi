@@ -8,6 +8,8 @@ import { addModelItem, updateModelItem } from 'store/slices/modelsSlice';
 import { useHistory } from 'react-router-dom';
 import ModelService from 'services/ModelService';
 import DialogService from 'services/DialogService';
+import { T_MODEL_ITEM } from 'types';
+import PropTypes from 'prop-types';
 
 const ModelSaveBar = ({isFormValid, modelItem, renamedCategories, updateModelItem, addModelItem}) => {
     const history = useHistory();
@@ -75,6 +77,14 @@ const ModelSaveBar = ({isFormValid, modelItem, renamedCategories, updateModelIte
             </Toolbar>
         </AppBar>
     )
+};
+
+ModelSaveBar.propTypes = {
+    modelItem: T_MODEL_ITEM.isRequired,
+    isFormValid: PropTypes.bool.isRequired,
+    renamedCategories: PropTypes.object,
+    addModelItem: PropTypes.func.isRequired,
+    updateModelItem: PropTypes.func.isRequired,
 };
 
 export default connect(null, {addModelItem, updateModelItem})(ModelSaveBar);

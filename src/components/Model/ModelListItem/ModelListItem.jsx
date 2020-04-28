@@ -3,6 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import styles from './ModelListItem.module.scss';
 import { getModelDetailsRoute } from 'services/RoutingService';
 import { useHistory } from 'react-router-dom';
+import { T_MODEL_ITEM } from 'types';
 
 const ModelListItem = ({modelItem}) => {
     const history = useHistory();
@@ -18,6 +19,10 @@ const ModelListItem = ({modelItem}) => {
             </Typography>
         </div>
     );
+};
+
+ModelListItem.propTypes = {
+    modelItem: T_MODEL_ITEM.isRequired
 };
 
 export default ModelListItem;

@@ -4,6 +4,7 @@ import SimpleDialog from 'components/Dialogs/SimpleDialog';
 import LottieAnimation from 'components/LottieAnimation/LottieAnimation';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import PropTypes from 'prop-types';
 
 const IntroDialog = ({onClose}) => {
     return (
@@ -36,6 +37,10 @@ const IntroDialog = ({onClose}) => {
             </div>
         </SimpleDialog>
     );
+};
+
+IntroDialog.propTypes = {
+    onClose: PropTypes.func.isRequired,
 };
 
 export default IntroDialog;

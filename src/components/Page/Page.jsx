@@ -2,6 +2,8 @@ import React from 'react';
 import styles from './Page.module.scss'
 import Message from 'components/Message/Message';
 import classnames from 'classnames';
+import { T_CHILDREN } from 'types';
+import PropTypes from 'prop-types';
 
 const PageContainer = ({children, hasTopBar = true, hasBottomBar = false, isCentered = false, className}) => {
     return (
@@ -30,5 +32,13 @@ class Page extends React.Component {
         )
     }
 }
+
+Page.propTypes = {
+    children: T_CHILDREN.isRequired,
+    hasTopBar: PropTypes.bool,
+    hasBottomBar: PropTypes.bool,
+    isCentered: PropTypes.bool,
+    className: PropTypes.string,
+};
 
 export default Page;

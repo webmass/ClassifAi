@@ -4,7 +4,7 @@ import Page from 'components/Page/Page';
 const NotFoundPage = () => {
     return (
         <Page.Error>
-            404
+            Page not Found
         </Page.Error>
     )
 };

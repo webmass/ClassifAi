@@ -29,13 +29,13 @@ const ModelSearch = ({localModels, lastSearchValue, updateLastSearchValue}) => {
         setHasError(true);
     };
 
-    const getCommunityModels = () => {
+    const getCommunityModels = useCallback(() => {
         setIsLoading(true);
         ArweaveService.getAllModels()
             .then(result => isMountedRef.current ? setModels(result.data) : null)
             .finally(() => isMountedRef.current ? setIsLoading(false) : null)
             .catch(handleCommunityError)
-    };
+    }, []);
 
 
     const search = useCallback((value) => {
@@ -60,7 +60,7 @@ const ModelSearch = ({localModels, lastSearchValue, updateLastSearchValue}) => {
             getCommunityModels();
         }
         return () => isMountedRef.current = false;
-    }, [wallet, isCommunitySearch]);
+    }, [wallet, isCommunitySearch, getCommunityModels]);
 
     useEffect(() => {
         setFilteredModels(search(searchValue));

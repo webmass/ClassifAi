@@ -7,6 +7,8 @@ import { removeModelItem } from 'store/slices/modelsSlice';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import DialogService from 'services/DialogService';
+import { T_MODEL_ITEM } from 'types';
+import PropTypes from 'prop-types';
 
 const ModelDeleter = ({modelItem, removeModelItem}) => {
     const history = useHistory();
@@ -27,6 +29,11 @@ const ModelDeleter = ({modelItem, removeModelItem}) => {
     return (
         <IconButton onClick={handleDelete} color="secondary"><Delete/></IconButton>
     );
+};
+
+ModelDeleter.propTypes = {
+    modelItem: T_MODEL_ITEM.isRequired,
+    removeModelItem: PropTypes.func.isRequired
 };
 
 export default connect(null, {removeModelItem})(ModelDeleter);

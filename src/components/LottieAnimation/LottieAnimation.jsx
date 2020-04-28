@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
-import PropTypes from 'prop-types';
 import Lottie from 'react-lottie';
+import { T_LOTTIE_ANIMATION } from 'types';
 
 const LottieAnimation = ({
     animationName, height, width, loop, autoplay, onComplete, rendererSettings
@@ -48,6 +48,7 @@ const LottieAnimation = ({
 
 LottieAnimation.defaultProps = {
     onComplete: () => {},
+    animationName: '',
     height: '100%',
     width: '100%',
     autoplay: true,
@@ -57,11 +58,6 @@ LottieAnimation.defaultProps = {
     }
 };
 
-LottieAnimation.propTypes = {
-    onComplete: PropTypes.func,
-    animationName: PropTypes.string.isRequired,
-    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-};
+LottieAnimation.propTypes = T_LOTTIE_ANIMATION;
 
 export default LottieAnimation;

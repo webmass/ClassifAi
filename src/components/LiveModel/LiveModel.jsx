@@ -7,6 +7,7 @@ import Message from 'components/Message/Message';
 import LottieAnimation from 'components/LottieAnimation/LottieAnimation';
 import ModelService from 'services/ModelService';
 import LiveModelActions from 'components/LiveModel/LiveModelActions';
+import { T_MODEL_ITEM } from 'types';
 
 const LiveModel = ({modelItem}) => {
     const {id, description, isCommunityModel} = modelItem;
@@ -85,6 +86,10 @@ const LiveModel = ({modelItem}) => {
             </Card>
         </div>
     );
+};
+
+LiveModel.propTypes = {
+    modelItem: T_MODEL_ITEM
 };
 
 export default LiveModel;

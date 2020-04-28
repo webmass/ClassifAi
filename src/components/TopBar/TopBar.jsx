@@ -4,6 +4,8 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { goBack } from 'services/RoutingService';
+import PropTypes from 'prop-types';
+import { T_CHILDREN } from 'types';
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -53,6 +55,13 @@ const TopBar = ({title, position = 'fixed', children, hasBackButton = true}) => 
             </AppBar>
         </div>
     );
+};
+
+TopBar.propTypes = {
+    title: PropTypes.string,
+    position: PropTypes.string,
+    hasBackButton: PropTypes.bool,
+    children: T_CHILDREN,
 };
 
 export default TopBar;

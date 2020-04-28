@@ -12,6 +12,8 @@ import DialogService from 'services/DialogService';
 import ListItem from '@material-ui/core/ListItem';
 import List from '@material-ui/core/List';
 import LottieAnimation from 'components/LottieAnimation/LottieAnimation';
+import { T_MODEL_ITEM } from 'types';
+import PropTypes from 'prop-types';
 
 const LiveModelActions = ({modelItem, webcam, updateModelItem}) => {
     const [nbTraining, setNbTraining] = useState(modelItem.nbTrainings);
@@ -87,6 +89,12 @@ const LiveModelActions = ({modelItem, webcam, updateModelItem}) => {
             </div>
         </div>
     )
+};
+
+LiveModelActions.propTypes = {
+    modelItem: T_MODEL_ITEM,
+    webcam: PropTypes.object.isRequired,
+    updateModelItem: PropTypes.func.isRequired
 };
 
 export default connect(null, {updateModelItem})(LiveModelActions);
