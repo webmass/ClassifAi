@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { Search } from '@material-ui/icons';
 import { updateLastSearchValue } from 'store/slices/searchSlice';
+import { updateCommunityModels } from 'store/slices/communityModelsSlice';
 import styles from './ModelSearch.module.scss';
 import ModelList from 'components/Model/ModelList/ModelList';
 import ArweaveService from 'services/ArweaveService';
@@ -14,13 +15,13 @@ import AppContext from 'app/AppContext';
 import Message from 'components/Message/Message';
 import StyledTextField from 'components/StyledTextField/StyledTextField';
 
-const ModelSearch = ({localModels, lastSearchValue, updateLastSearchValue}) => {
+const ModelSearch = ({localModels, communityModels, lastSearchValue, updateLastSearchValue, updateCommunityModels}) => {
     const {wallet} = useContext(AppContext);
     const {searchType} = useParams();
     const [searchValue, setSearchValue] = useState(lastSearchValue);
     const isMountedRef = useRef(true);
     const isCommunitySearch = searchType === SEARCH_TYPES.community;
-    const [models, setModels] = useState(isCommunitySearch ? [] : localModels);
+    const [models, setModels] = useState(isCommunitySearch ? communityModels : localModels);
     const [isLoading, setIsLoading] = useState(false);
     const [hasError, setHasError] = useState(false);
 
@@ -29,10 +30,19 @@ const ModelSearch = ({localModels, lastSearchValue, updateLastSearchValue}) => {
         setHasError(true);
     };
 
+    const handleCommunitySuccess = (result) => {
+        if(isMountedRef.current){
+            setModels(result.data)
+        }
+        updateCommunityModels(result.data);
+    };
+
     const getCommunityModels = useCallback(() => {
-        setIsLoading(true);
+        if(!communityModels.length){
+            setIsLoading(true);
+        }
         ArweaveService.getAllModels()
-            .then(result => isMountedRef.current ? setModels(result.data) : null)
+            .then(handleCommunitySuccess)
             .finally(() => isMountedRef.current ? setIsLoading(false) : null)
             .catch(handleCommunityError)
     }, []);
@@ -90,6 +100,10 @@ const ModelSearch = ({localModels, lastSearchValue, updateLastSearchValue}) => {
 };
 
 export default connect(
-    state => ({localModels: state.models, lastSearchValue: state.lastSearchValue}),
-    {updateLastSearchValue}
+    state => ({
+        localModels: state.models,
+        communityModels: state.communityModels,
+        lastSearchValue: state.lastSearchValue
+    }),
+    {updateLastSearchValue, updateCommunityModels}
 )(ModelSearch)
