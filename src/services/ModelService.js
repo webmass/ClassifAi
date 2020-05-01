@@ -9,10 +9,12 @@ class ModelService {
         const getterService = isCommunityModel ? ArweaveService : Database;
         return getterService.getModelItem(id);
     };
-    static getModelDatasetItem = (modelId) => {
-        const isCommunityModel = this.isCommunityId(modelId);
-        const getterService = isCommunityModel ? ArweaveService : Database;
-        return getterService.getModelDatasetItem(modelId);
+    static getModelDatasetItem = (modelItem) => {
+        if(modelItem.isCommunityModel){
+            return ArweaveService.getModelDatasetItem(modelItem.datasetRefId);
+        } else {
+            return Database.getModelDatasetItem(modelItem.id);
+        }
     };
     static saveCommunityDatasetToLocal = async (communityModelId, modelId) => {
         const datasetItem = await ArweaveService.getModelDatasetItem(communityModelId);

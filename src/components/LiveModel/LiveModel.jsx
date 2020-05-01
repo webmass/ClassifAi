@@ -51,7 +51,7 @@ const LiveModel = ({modelItem}) => {
         };
         const restoreTeachings = () => {
             TensorFlowService.clear();
-            ModelService.getModelDatasetItem(id)
+            ModelService.getModelDatasetItem(modelItem)
                 .then(datasetItem => handleRestoreSuccess(datasetItem))
                 .catch(handleRestoreFailed);
         };

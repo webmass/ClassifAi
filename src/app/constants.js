@@ -30,9 +30,21 @@ export const DB_OBJECT_STORES = [
 export const DB_INTRO_DONE_SETTING = 'introDone';
 export const DB_EXAMPLE_ADDED_SETTING = 'exampleAdded';
 // Arweave
-export const AR_DEFAULT_TAG = {name: 'webmass-app-name', value: 'permaweb-image-classifier-v1'};
-export const AR_MODEL_TAG_NAME = 'is-model';
-export const AR_MODEL_DATASET_TAG_NAME = 'is-model-dataset';
-export const AR_MODEL_NAME_TAG_NAME = 'model-name';
-export const AR_MODEL_DESCRIPTION_TAG_NAME = 'model-description';
-export const AR_MODEL_TRANSACTION_ID_TAG_NAME = 'model-transaction-id';
+export const AR_APP_NAME = 'ClassifAi';
+export const AR_APP_VERSION = '0';
+export const AR_APP_NAME_TAG = {name: 'App-Name', value: AR_APP_NAME};
+export const AR_APP_VERSION_TAG = {name: 'App-Version', value: AR_APP_VERSION};
+export const AR_DEFAULT_TAGS = [
+    AR_APP_NAME_TAG,
+    AR_APP_VERSION_TAG,
+];
+export const AR_MODEL_TAG_NAME = AR_APP_NAME + '-is-model';
+export const AR_MODEL_DATASET_TAG_NAME = AR_APP_NAME + '-is-model-dataset';
+export const AR_MODEL_NAME_TAG_NAME = AR_APP_NAME + '-model-name';
+export const AR_MODEL_DESCRIPTION_TAG_NAME = AR_APP_NAME + '-model-description';
+export const AR_MODEL_DATASET_ID_TAG_NAME = AR_APP_NAME + '-model-dataset-transaction-id';
+export const AR_CHUNK_INDEX_TAG_NAME = AR_APP_NAME + '-chunk-index';
+export const AR_YEAR_TAG_NAME = AR_APP_NAME + '-publication-year';
+export const AR_NAME_SEARCH_TAG_NAME = AR_APP_NAME + '-name-search-';
+export const AR_FROM_TAG_NAME = AR_APP_NAME + '-from';
+export const AR_WORD_TAG_NAME = AR_APP_NAME + '-model-name-word';

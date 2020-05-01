@@ -1,9 +1,18 @@
 import Arweave from 'arweave/web';
+
 import {
-    AR_DEFAULT_TAG,
-    AR_MODEL_DATASET_TAG_NAME, AR_MODEL_DESCRIPTION_TAG_NAME, AR_MODEL_NAME_TAG_NAME, AR_MODEL_TAG_NAME,
-    AR_MODEL_TRANSACTION_ID_TAG_NAME,
-    DB_SETTINGS
+    AR_CHUNK_INDEX_TAG_NAME,
+    AR_MODEL_DATASET_ID_TAG_NAME,
+    AR_MODEL_DATASET_TAG_NAME,
+    AR_MODEL_DESCRIPTION_TAG_NAME,
+    AR_MODEL_NAME_TAG_NAME,
+    AR_MODEL_TAG_NAME,
+    DB_SETTINGS,
+    AR_YEAR_TAG_NAME,
+    AR_NAME_SEARCH_TAG_NAME,
+    AR_DEFAULT_TAGS,
+    AR_APP_VERSION_TAG,
+    AR_APP_NAME_TAG, AR_FROM_TAG_NAME, AR_WORD_TAG_NAME
 } from 'app/constants';
 import Database from 'services/Database';
 
@@ -17,7 +26,7 @@ class ArweaveService {
             protocol: 'https',
             host: 'arweave.net',
             port: 443,
-            timeout: 20000
+            timeout: 500000,
         });
         const wallet = await Database.getItem(DB_SETTINGS, 'wallet');
         if (wallet) {
@@ -36,53 +45,114 @@ class ArweaveService {
         };
     };
 
-    static publishModelDataset = async (modelTransactionId, dataset) => {
-        const tags = [
-            {name: AR_MODEL_DATASET_TAG_NAME, value: 'true'},
-            {name: AR_MODEL_TRANSACTION_ID_TAG_NAME, value: modelTransactionId},
-        ];
-        const signedModelDatasetTransaction = await this.generateSignedTransaction({
-            modelId: modelTransactionId,
-            data: dataset
-        }, tags, this.#jwk);
-        return await this.postTransaction(signedModelDatasetTransaction);
-    };
-
-    static publishModel = async (modelItem, dataset) => {
-        const unsignedModel = {...modelItem, id: undefined, isCommunityModel: true};
-        const tags = [
-            {name: AR_MODEL_TAG_NAME, value: 'true'},
-            {name: AR_MODEL_NAME_TAG_NAME, value: unsignedModel.name},
-            {name: AR_MODEL_DESCRIPTION_TAG_NAME, value: unsignedModel.description}
-        ];
-        const signedModelTransaction = await this.generateSignedTransaction(unsignedModel, tags, this.#jwk);
-        const datasetResult = await this.publishModelDataset(signedModelTransaction.id, dataset);
-        if (datasetResult.message === 'OK') {
-            const modelResult = await this.postTransaction(signedModelTransaction);
-            if (modelResult.message === 'OK') {
-                modelResult.message = `The publish process has started 👍 ! It usually takes a few minutes to be on the blockchain. `;
-                modelResult.message += `Publishing duration depends on the training level, a well trained model will take more time to be fully published.`;
-            }
-            return modelResult;
+    static signAndPost = async (payload, tags, last_tx = null, nbAttempts = 0) => {
+        const maxAttempts = 50;
+        const transaction = await this.generateSignedTransaction(payload, tags, last_tx);
+        const transactionResult = await this.postTransaction(transaction);
+        if (this.hasError(transactionResult) && nbAttempts < maxAttempts) {
+            return await this.signAndPost(payload, tags, last_tx, ++nbAttempts);
         }
-        return datasetResult;
-    };
-
-    static generateSignedTransaction = async (payload, tags = [], jwk) => {
-        const transaction = await this.#arweave.createTransaction({data: JSON.stringify(payload)}, jwk);
-        tags.concat([AR_DEFAULT_TAG]).forEach(tag => transaction.addTag(tag.name, tag.value));
-        await this.#arweave.transactions.sign(transaction, jwk);
-        return transaction;
+        return {transaction, transactionResult};
     };
 
     static postTransaction = async (transaction) => {
-        const result = await this.#arweave.transactions.post(transaction)
-            .catch(reason => {
-                // timeout can easily happen with large models, we take an optimistic approach
-                return reason.code === 'ECONNABORTED' ? {status: 200, data: 'OK'} : reason;
-            });
-        const resultType = result.status >= 200 && result.status < 300 ? 'success' : 'error';
-        return {...result, transaction, resultType, message: result.data || 'error'};
+        return this.#arweave.transactions.post(transaction);
+    };
+
+    static publishDataset = async (modelItem, dataset, publicationTime) => {
+        const chunkMaxSize = 250000;
+        const datasetPayload = {
+            publicationTime,
+            data: dataset
+        };
+        const datasetTags = [{name: AR_MODEL_DATASET_TAG_NAME, value: 'true'}];
+        const refTransaction = await this.generateSignedTransaction(datasetPayload, datasetTags);
+        const datasetRefId = refTransaction.id;
+        const stringPayload = JSON.stringify(datasetPayload);
+        const payloadLength = stringPayload.length;
+        let last_tx = null;
+        const nbChunks = Math.ceil(payloadLength / chunkMaxSize);
+        for (let i = 0; i * chunkMaxSize < payloadLength; i++) {
+            const chunk = stringPayload.substring(i * chunkMaxSize, (i + 1) * chunkMaxSize);
+            const chunkPayload = {chunkIndex: i, chunk};
+            const chunkTags = [
+                ...datasetTags,
+                {name: AR_CHUNK_INDEX_TAG_NAME, value: i.toString()},
+                {name: AR_MODEL_DATASET_ID_TAG_NAME, value: datasetRefId}
+            ];
+            const {transaction, transactionResult} = await this.signAndPost(chunkPayload, chunkTags, last_tx);
+            if (this.hasError(transactionResult)) return {
+                datasetResult: transactionResult,
+                datasetRefId,
+                publicationTime
+            };
+            last_tx = transaction.last_tx;
+        }
+        return {datasetResult: {data: 'OK', status: 200}, datasetRefId, publicationTime, nbChunks};
+    };
+
+    static getErrorMessage = (koResult) => {
+        return {message: koResult.data || `an error ${koResult.status} occurred`, error: true};
+    };
+
+    static hasError = (result) => result.data !== 'OK' || result.status !== 200;
+
+    static publishModel = async (modelItem, datasetRefId, publicationTime, nbChunks) => {
+        const communityModel = {
+            ...modelItem,
+            id: undefined,
+            datasetRefId,
+            isCommunityModel: true,
+            publicationTime,
+            nbChunks
+        };
+        const address = this.#address;
+        const modelTags = [
+            {name: AR_MODEL_TAG_NAME, value: 'true'},
+            {name: AR_MODEL_NAME_TAG_NAME, value: communityModel.name},
+            {name: AR_MODEL_DESCRIPTION_TAG_NAME, value: communityModel.description},
+            {name: AR_YEAR_TAG_NAME, value: (new Date(publicationTime)).getFullYear().toString()},
+            {name: AR_FROM_TAG_NAME, address},
+            ...this.getSearchTags(modelItem.name, modelItem.description)
+        ];
+        const modelTransaction = await this.generateSignedTransaction(communityModel, modelTags);
+        return await this.postTransaction(modelTransaction);
+    };
+
+    static getSearchTags = (name, description) => {
+        const tags = [];
+        const maxSearchableCharacters = 20;
+        const uniqueWords = [...new Set((name + ' ' + description).toLowerCase().split(' '))];
+        const searchable = name.toLowerCase().substring(0, maxSearchableCharacters);
+        for (let i = 1; i < searchable.length; i++) {
+            tags.push({name: AR_NAME_SEARCH_TAG_NAME + i, value: searchable.substring(0, i)});
+        }
+        uniqueWords.forEach((word, index) => tags.push({
+            name: AR_WORD_TAG_NAME + index, value: word
+        }));
+        return tags;
+    };
+
+    static publish = async (modelItem, dataset) => {
+        const publicationTime = Date.now();
+        const {datasetResult, datasetRefId, nbChunks} = await this.publishDataset(modelItem, dataset, publicationTime);
+        if (this.hasError(datasetResult)) {
+            return this.getErrorMessage(datasetResult);
+        } else {
+            const modelResult = await this.publishModel(modelItem, datasetRefId, publicationTime, nbChunks);
+            if (this.hasError(modelResult)) return this.getErrorMessage(modelResult);
+            let message = `The publish process has started 👍 ! It usually takes a few minutes to be on the blockchain. `;
+            message += `Publishing duration depends on the training level, a well trained model will take more time to be fully published.`;
+            return {message, error: false};
+        }
+    };
+
+    static generateSignedTransaction = async (payload, tags = [], last_tx) => {
+        const data = JSON.stringify(payload);
+        const transaction = await this.#arweave.createTransaction({data, last_tx}, this.#jwk);
+        tags.concat(AR_DEFAULT_TAGS).forEach(tag => transaction.addTag(tag.name, tag.value));
+        await this.#arweave.transactions.sign(transaction, this.#jwk);
+        return transaction;
     };
 
     static getStoredTransaction = async (arql) => {
@@ -96,21 +166,28 @@ class ArweaveService {
             op: 'and',
             expr1: {
                 op: 'equals',
-                expr1: AR_DEFAULT_TAG.name,
-                expr2: AR_DEFAULT_TAG.value,
+                expr1: AR_APP_NAME_TAG.name,
+                expr2: AR_APP_NAME_TAG.value
             },
-            expr2: arql
+            expr2: {
+                op: 'and',
+                expr1: {
+                    op: 'equals',
+                    expr1: AR_APP_VERSION_TAG.name,
+                    expr2: AR_APP_VERSION_TAG.value
+                },
+                expr2: arql
+            }
         };
     };
 
-    static getTransactionData = async (arql) => {
+    static getTransactionData = async (arql, isString = true) => {
         const txs = await this.getStoredTransaction(arql);
         const totalCount = txs.length;
-        const results = txs.map(async (tx) => ({
-            ...JSON.parse(await this.#arweave.transactions.getData(tx.id, {decode: true, string: true})),
-            // timestamp: await getTimestampFromTxId(tx.id),
-            id: tx.id,
-        }));
+        const results = txs.map(tx => {
+            const decodedData = this.#arweave.utils.b64UrlToString(tx.data);
+            return isString ? {...JSON.parse(decodedData), id: tx.id} : decodedData;
+        });
         return {
             totalCount,
             data: await Promise.all(results),
@@ -122,7 +199,7 @@ class ArweaveService {
         return await this.getTransactionData(arql);
     };
 
-    static getItem = async (type, keyName, keyValue) => {
+    static getItems = async (type, keyName, keyValue, isString = true) => {
         const arql = this.generateArql({
             op: 'and',
             expr1: {
@@ -132,12 +209,17 @@ class ArweaveService {
                 op: 'equals', expr1: keyName, expr2: keyValue
             }
         });
-        const result = await this.getTransactionData(arql);
-        return (result && result.data && result.data[0]) || null;
+        const result = await this.getTransactionData(arql, isString);
+        return (result && result.data) || null;
     };
 
-    static getModelDatasetItem = async (modelTransactionId) => {
-        return this.getItem(AR_MODEL_DATASET_TAG_NAME, AR_MODEL_TRANSACTION_ID_TAG_NAME, modelTransactionId);
+    static getModelDatasetItem = async (id) => {
+        const items = await this.getItems(AR_MODEL_DATASET_TAG_NAME, AR_MODEL_DATASET_ID_TAG_NAME, id, false);
+        const parsedItems = items.map(item => JSON.parse(item));
+        parsedItems.sort((a, b) => b.chunkIndex < a.chunkIndex ? 1 : -1);
+        const chunks = parsedItems.map(item => item.chunk);
+        const joined = chunks.join('');
+        return JSON.parse(joined);
     };
 
     static getModelItem = async (modelTransactionId) => {
