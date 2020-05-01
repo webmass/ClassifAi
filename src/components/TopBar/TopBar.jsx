@@ -7,7 +7,7 @@ import { goBack } from 'services/RoutingService';
 import PropTypes from 'prop-types';
 import { T_CHILDREN } from 'types';
 
-const useStyles = makeStyles(() => ({
+const useStyles = (titleAlign) => makeStyles(() => ({
     root: {
         flexGrow: 1,
     },
@@ -21,16 +21,16 @@ const useStyles = makeStyles(() => ({
         overflow: 'hidden'
     },
     title: {
-        textAlign: 'left',
+        textAlign: titleAlign,
         textOverflow: 'ellipsis',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
     },
 }));
 
-const TopBar = ({title, position = 'fixed', children, hasBackButton = true}) => {
+const TopBar = ({title, titleAlign = 'left' , position = 'fixed', children, hasBackButton = true}) => {
     let history = useHistory();
-    const classes = useStyles();
+    const classes = useStyles(titleAlign)();
 
     const handleBack = () => goBack(history);
 
@@ -59,6 +59,7 @@ const TopBar = ({title, position = 'fixed', children, hasBackButton = true}) => 
 
 TopBar.propTypes = {
     title: PropTypes.string,
+    titleAlign: PropTypes.string,
     position: PropTypes.string,
     hasBackButton: PropTypes.bool,
     children: T_CHILDREN,

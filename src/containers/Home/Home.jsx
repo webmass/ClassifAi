@@ -39,7 +39,7 @@ const Home = ({updateLastSearchValue}) => {
 
     return (
         <Page hasTopBar={true}>
-            <TopBar hasBackButton={false} title='Permaweb Image Classifier'>
+            <TopBar hasBackButton={false} title='Permaweb Image Classifier' titleAlign='center'>
                 <IconButton onClick={handleAccount}>
                     {wallet ? <Person/> : <PersonOutline/>}
                 </IconButton>
