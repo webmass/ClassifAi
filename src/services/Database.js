@@ -44,9 +44,13 @@ class Database {
     static saveItem(storeObjectName, data) {
         const transaction = Database.DB.transaction(storeObjectName, 'readwrite');
         const objectStore = transaction.objectStore(storeObjectName);
-        const request = objectStore.put(data);
+        const now = Date.now();
+        const dates = {updatedAt: now};
+        if(!data.createdAt) dates.createdAt = now;
+        const dataWithDate = {...data, ...dates};
+        const request = objectStore.put(dataWithDate);
         return new Promise((resolve, reject) => {
-            request.onsuccess = e => resolve({...data, id: e.target.result});
+            request.onsuccess = e => resolve({...dataWithDate, id: e.target.result});
             request.onerror = e => reject(e);
         });
     };
