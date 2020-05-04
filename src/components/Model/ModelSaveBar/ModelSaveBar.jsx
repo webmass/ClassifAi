@@ -1,66 +1,52 @@
 import { AppBar, Button, Toolbar } from '@material-ui/core';
 import styles from 'containers/ModelForm/ModelForm.module.scss';
 import React, { useState } from 'react';
-import Database from 'services/Database';
-import { getModelDetailsRoute, goBack, goHome } from 'services/RoutingService';
-import { connect } from 'react-redux';
-import { addModelItem, updateModelItem } from 'store/slices/modelsSlice';
-import { useHistory } from 'react-router-dom';
+import { getModelDetailsRoute } from 'services/RoutingService';
 import ModelService from 'services/ModelService';
 import DialogService from 'services/DialogService';
 import { T_MODEL_ITEM } from 'types';
 import PropTypes from 'prop-types';
+import useRouting from 'hooks/useRouting';
 
-const ModelSaveBar = ({isFormValid, modelItem, renamedCategories, updateModelItem, addModelItem}) => {
-    const history = useHistory();
+const ModelSaveBar = ({isFormValid, formData, renamedCategories, saveModelItem}) => {
+    const routing = useRouting();
     const [isSaving, setIsSaving] = useState(false);
 
     const handleRenamedCategories = async (savedModel, renamedCategories) => {
         if(!Object.keys(renamedCategories).length) return;
         const result = await ModelService.renameModelDatasetCategories(savedModel.id, renamedCategories);
         if(result && result.nbTrainingsUpdateNeeded) {
-            await ModelService.updateNbTrainings(savedModel, updateModelItem);
+            const recalculatedNbTrainings = await ModelService.getUpdatedNbTrainings(savedModel, saveModelItem);
+            saveModelItem({...savedModel, nbTrainings: recalculatedNbTrainings});
         }
     };
 
     const save = async () => {
-        let saveType;
         setIsSaving(true);
         const modelToSaveLocally = {
-            ...modelItem,
-            nbTrainings: modelItem.nbTrainings || 0,
+            ...formData,
+            nbTrainings: formData.nbTrainings || 0,
             isCommunityModel: false
         };
-        if (modelItem.isCommunityModel) {
-            delete modelToSaveLocally.id;
-            modelToSaveLocally.parentId = modelItem.id;
+        if (formData.isCommunityModel) {
+            const removeFields = ['id', 'datasetRefId', 'publicationTime', 'nbChunks', 'createdAt', 'updatedAt'];
+            removeFields.forEach(field => delete modelToSaveLocally[field]);
+            modelToSaveLocally.parentId = formData.id;
         }
-        const savedModel = await Database.saveModelItem(modelToSaveLocally);
-        if (modelToSaveLocally.id) {
-            updateModelItem(savedModel);
-            saveType = 'update';
-        } else {
-            if (savedModel.parentId) await ModelService.saveCommunityDatasetToLocal(savedModel.parentId, savedModel.id);
-            addModelItem(savedModel);
-            saveType = 'create';
-        }
+        const savedModel = await saveModelItem(modelToSaveLocally);
+        if(formData.datasetRefId) await ModelService.saveCommunityDatasetToLocal(formData.datasetRefId, savedModel.id);
         await handleRenamedCategories(savedModel, renamedCategories);
-        return {savedModel, saveType};
+        return savedModel;
     };
 
-    const handleSaveSuccess = ({savedModel, saveType}) => {
+    const handleSaveSuccess = (savedModel) => {
         setIsSaving(false);
-        if (saveType === 'create') {
-            goHome(history);
-            history.push({pathname: getModelDetailsRoute(savedModel.id)});
-        } else {
-            goBack(history);
-        }
+        routing.push(getModelDetailsRoute(savedModel.id));
     };
 
-    const handleError = () => {
+    const handleError = (e) => {
         setIsSaving(false);
-        DialogService.showError('An error occured while saving :(');
+        DialogService.showError('An error occured :(');
     };
 
     const handleSave = async () => {
@@ -80,11 +66,10 @@ const ModelSaveBar = ({isFormValid, modelItem, renamedCategories, updateModelIte
 };
 
 ModelSaveBar.propTypes = {
-    modelItem: T_MODEL_ITEM.isRequired,
+    formData: T_MODEL_ITEM.isRequired,
     isFormValid: PropTypes.bool.isRequired,
     renamedCategories: PropTypes.object,
-    addModelItem: PropTypes.func.isRequired,
-    updateModelItem: PropTypes.func.isRequired,
+    saveModelItem: PropTypes.func.isRequired,
 };
 
-export default connect(null, {addModelItem, updateModelItem})(ModelSaveBar);
+export default ModelSaveBar;

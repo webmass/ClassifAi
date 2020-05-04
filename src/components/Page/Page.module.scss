@@ -10,9 +10,9 @@ $bar-height: 56px;
     justify-content: center;
     align-items: center;
 }
-.withTopBar {
+.topBarPadding {
     padding-top: $bar-height;
 }
-.withBottomBar {
+.bottomBarPadding {
     padding-bottom: $bar-height;
 }

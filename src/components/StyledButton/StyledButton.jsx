@@ -11,10 +11,7 @@ const StyledButton = withStyles({
         height: 50,
         padding: '0 25px',
         boxShadow: '0 3px 5px 2px rgba(63, 81, 181, 0.5);',
-    },
-    label: {
-        textTransform: 'uppercase',
-    },
+    }
 })(({ classes, ...other }) => (
     <Button className={classes.root} {...other} />
 ));

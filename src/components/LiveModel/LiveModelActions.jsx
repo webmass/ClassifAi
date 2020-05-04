@@ -1,29 +1,24 @@
 import { Button, CardActions, Link, Typography } from '@material-ui/core';
 import styles from 'components/LiveModel/LiveModel.module.scss';
-import React, { useState } from 'react';
+import React from 'react';
 import TensorFlowService from 'services/TensorFlowService';
-import { updateModelItem } from 'store/slices/modelsSlice';
 import Database from 'services/Database';
 import * as tf from '@tensorflow/tfjs';
 import { getModelFormRoute } from 'services/RoutingService';
-import { useHistory } from 'react-router-dom';
-import { connect } from 'react-redux';
 import DialogService from 'services/DialogService';
 import ListItem from '@material-ui/core/ListItem';
 import List from '@material-ui/core/List';
 import LottieAnimation from 'components/LottieAnimation/LottieAnimation';
-import { T_MODEL_ITEM } from 'types';
 import PropTypes from 'prop-types';
+import { T_MODEL_ITEM } from 'types';
+import useRouting from 'hooks/useRouting';
 
-const LiveModelActions = ({modelItem, isDatasetReady, webcam, updateModelItem}) => {
-    const [nbTraining, setNbTraining] = useState(modelItem.nbTrainings);
-    const history = useHistory();
+const LiveModelActions = ({modelItem, saveModelItem, isDatasetReady, webcam}) => {
+    const routing = useRouting();
 
     const refreshTrainingInfo = async () => {
         const updatedData = {...modelItem, nbTrainings: TensorFlowService.getNbTrainings()};
-        setNbTraining(updatedData.nbTrainings);
-        updateModelItem(updatedData);
-        await Database.saveModelItem(updatedData);
+        saveModelItem(updatedData);
     };
 
     const handleCapture = async (classId) => {
@@ -36,7 +31,7 @@ const LiveModelActions = ({modelItem, isDatasetReady, webcam, updateModelItem}) 
     };
 
     const handleTeachingsDetails = () => {
-        if(!nbTraining) return;
+        if(!modelItem.nbTrainings) return;
         const categoriesCounts = TensorFlowService.getCategoriesCounts();
         const counts = Object.keys(categoriesCounts)
             .map(category => <ListItem key={category}>- {category} : {categoriesCounts[category]}</ListItem>);
@@ -62,13 +57,13 @@ const LiveModelActions = ({modelItem, isDatasetReady, webcam, updateModelItem}) 
 
     const trainingInfo = <Typography variant='body2' gutterBottom={true}>
         <Link onClick={handleTeachingsDetails}>
-            {nbTraining ? `Trained with ${nbTraining} images` : 'Not trained yet'}
+            {modelItem.nbTrainings ? `Trained with ${modelItem.nbTrainings} images` : 'Not trained yet'}
         </Link>
     </Typography>;
 
     if (modelItem.isCommunityModel) {
         if(!isDatasetReady) return null;
-        const handleEdit = () => history.push({pathname: getModelFormRoute(modelItem.id), state: {details: modelItem}});
+        const handleEdit = () => routing.push(getModelFormRoute(modelItem.id));
         return (
             <React.Fragment>
                 <Typography variant='body1' gutterBottom={true}>
@@ -81,22 +76,22 @@ const LiveModelActions = ({modelItem, isDatasetReady, webcam, updateModelItem}) 
 
     return (
         <div>
-            <Typography>Teach the IA that the current image is :</Typography>
+            <Typography color={modelItem.nbTrainings ? 'textPrimary' : 'secondary'}>Teach the IA that the current image is :</Typography>
             <div className={styles.actionsWrapper}>
                 <CardActions className={styles.actions}>
                     {buttons}
                 </CardActions>
-                {trainingInfo}
             </div>
+            {trainingInfo}
         </div>
     )
 };
 
 LiveModelActions.propTypes = {
-    modelItem: T_MODEL_ITEM,
+    modelItem: T_MODEL_ITEM.isRequired,
     isDatasetReady: PropTypes.bool.isRequired,
-    webcam: PropTypes.object.isRequired,
-    updateModelItem: PropTypes.func.isRequired
+    saveModelItem: PropTypes.func.isRequired,
+    webcam: PropTypes.object.isRequired
 };
 
-export default connect(null, {updateModelItem})(LiveModelActions);
+export default LiveModelActions;

@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import LottieAnimation from 'components/LottieAnimation/LottieAnimation';
 import styles from './Message.module.scss'
-import Typography from '@material-ui/core/Typography';
 import { T_CHILDREN } from 'types';
 
 const MessageContent = ({type, animationName, height, width, loop, children}) => {
@@ -12,7 +11,7 @@ const MessageContent = ({type, animationName, height, width, loop, children}) =>
                 animationName ?
                 <LottieAnimation animationName={animationName} height={height} width={width} loop={loop}/> : null
             }
-            <Typography variant='body1' className={styles[type]} align='center'>{children}</Typography>
+            <div className={styles[type]} align='center'>{children}</div>
         </div>
     )
 };

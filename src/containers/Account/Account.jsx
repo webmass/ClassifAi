@@ -24,7 +24,7 @@ const Account = () => {
     };
 
     return (
-        <Page hasTopBar={true}>
+        <Page addTopBarPadding={true}>
             <TopBar title='Log In / out'/>
             <Container className={styles.container}>
                 <Grid container spacing={4}>

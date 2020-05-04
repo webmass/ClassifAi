@@ -20,6 +20,8 @@ class TensorFlowService {
         this.#knnClassifier.clearAllClasses();
     };
 
+    static getNumClasses = () => this.#knnClassifier.getNumClasses();
+
     static setKnnDataset = storedDataset => {
         let dataset = {};
         Object.keys(storedDataset).forEach((key) => {
@@ -62,6 +64,16 @@ class TensorFlowService {
             nb += counts[category];
         });
         return nb;
+    };
+
+    static getPredictionFromWebcam = async (webcam) => {
+        const img = await webcam.capture().catch(() => null);
+        if (img) {
+            const prediction = await TensorFlowService.getImageKnnPrediction(img);
+            img.dispose();
+            return prediction;
+        }
+        return null;
     };
 
     static downloadModel = (exportName = 'download') => {

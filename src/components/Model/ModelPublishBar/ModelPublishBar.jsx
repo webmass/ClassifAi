@@ -19,7 +19,9 @@ const ModelPublishBar = ({modelItem}) => {
             showResult('error', 'Could not publish : ' + result.message);
         }
     };
-    const handlePublish = () => DialogService.showPublish(modelItem.name, handleConfirmedPublish);
+    const handlePublish = () => {
+        DialogService.showPublish(modelItem.name, handleConfirmedPublish);
+    };
     return (
         <AppBar position="fixed" className={styles.bottomBar} style={{top: 'auto'}}>
             <Toolbar>

@@ -17,6 +17,8 @@ export const T_MODEL_ITEM = PropTypes.shape({
     nbTrainings: PropTypes.number,
 });
 
+export const T_MODELS = PropTypes.arrayOf(T_MODEL_ITEM);
+
 export const T_LOTTIE_ANIMATION = {
     animationName: PropTypes.string.isRequired,
     height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

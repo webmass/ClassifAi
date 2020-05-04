@@ -2,17 +2,17 @@ import React, { useContext, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import StyledTextField from 'components/StyledTextField/StyledTextField';
 import ModelContext from 'components/Model/ModelContext';
-import PropTypes from 'prop-types';
+import { T_CATEGORY } from 'types';
 
 const CategoryListItem = ({category}) => {
-    const {modelItem, setModelItem, renamedCategories, setRenamedCategories} = useContext(ModelContext);
+    const {formData, setFormData, renamedCategories, setRenamedCategories} = useContext(ModelContext);
     const [isEdit, setIsEdit] = useState(false);
     const [newCategoryName, setNewCategoryName] = useState(category);
     const [hasError, setHasError] = useState(false);
 
     const handleChange = (event) => {
         const value = event.target.value.trim();
-        const hasCategoryWithSameName = !!modelItem.categories
+        const hasCategoryWithSameName = !!formData.categories
             .find(category => value && category.toLowerCase() === value.toLowerCase());
         setHasError(hasCategoryWithSameName);
         setNewCategoryName(event.target.value);
@@ -25,7 +25,7 @@ const CategoryListItem = ({category}) => {
             setNewCategoryName(category);
             return;
         }
-        const categories = [...modelItem.categories];
+        const categories = [...formData.categories];
         if(category !== newCategoryName){
             const renamed = {...renamedCategories, [category] : newCategoryName};
             setRenamedCategories(renamed);
@@ -33,9 +33,9 @@ const CategoryListItem = ({category}) => {
         if(newCategoryName){
             const editedCategoryIndex = categories.indexOf(category);
             categories[editedCategoryIndex] = newCategoryName;
-            setModelItem({...modelItem, categories});
+            setFormData({...formData, categories});
         } else {
-            setModelItem({...modelItem, categories: categories.filter(c => c !== category)});
+            setFormData({...formData, categories: categories.filter(c => c !== category)});
         }
     };
     const handleOpenEditMode = () => {
@@ -60,7 +60,7 @@ const CategoryListItem = ({category}) => {
 };
 
 CategoryListItem.propTypes = {
-    category: PropTypes.string.isRequired
+    category: T_CATEGORY
 };
 
 export default CategoryListItem;

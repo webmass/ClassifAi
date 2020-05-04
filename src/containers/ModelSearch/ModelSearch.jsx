@@ -10,7 +10,7 @@ import styles from './ModelSearch.module.scss';
 import ModelList from 'components/Model/ModelList/ModelList';
 import ArweaveService from 'services/ArweaveService';
 import { useParams } from 'react-router-dom';
-import { SEARCH_TYPES } from 'app/constants';
+import { SEARCH } from 'app/constants';
 import AppContext from 'app/AppContext';
 import Message from 'components/Message/Message';
 import StyledTextField from 'components/StyledTextField/StyledTextField';
@@ -20,39 +20,38 @@ const ModelSearch = ({localModels, communityModels, lastSearchValue, updateLastS
     const {searchType} = useParams();
     const [searchValue, setSearchValue] = useState(lastSearchValue);
     const isMountedRef = useRef(true);
-    const isCommunitySearch = searchType === SEARCH_TYPES.community;
+    const isCommunitySearch = searchType === SEARCH.COMMUNITY;
     const [models, setModels] = useState(isCommunitySearch ? communityModels : localModels);
     const [isLoading, setIsLoading] = useState(false);
     const [hasError, setHasError] = useState(false);
 
-    const handleCommunityError = () => {
-        setModels([]);
-        setHasError(true);
-    };
-
-    const handleCommunitySuccess = (result) => {
-        if(isMountedRef.current){
-            setModels(result.data)
-        }
-        updateCommunityModels(result.data);
-    };
-
     const getCommunityModels = useCallback(() => {
-        if(!communityModels.length){
-            setIsLoading(true);
-        }
+        const handleCommunityError = () => {
+            setModels([]);
+            setHasError(true);
+        };
+
+        const handleCommunitySuccess = (result) => {
+            if(isMountedRef.current){
+                setModels(result.data)
+            }
+            updateCommunityModels(result.data);
+        };
+
+        if(!communityModels.length) setIsLoading(true);
+
         ArweaveService.getAllModels()
             .then(handleCommunitySuccess)
             .finally(() => isMountedRef.current ? setIsLoading(false) : null)
             .catch(handleCommunityError)
-    }, []);
-
+    }, [communityModels.length, updateCommunityModels]);
 
     const search = useCallback((value) => {
         const searchRegEx = new RegExp(`${value}`, 'i');
         const searchResult = models.filter(modelItem => {
             return modelItem.name.match(searchRegEx) || modelItem.description.match(searchRegEx);
         });
+        searchResult.sort((a, b) => a.updatedAt < b.updatedAt ? 1 : -1);
         return searchResult;
     }, [models]);
 
@@ -78,7 +77,7 @@ const ModelSearch = ({localModels, communityModels, lastSearchValue, updateLastS
 
     return (
         <Page hasTopBar={true} className={styles.container}>
-            <TopBar>
+            <TopBar isBackToHome={true}>
                 <span className={styles.searchInputContainer}>
                     <StyledTextField
                         value={searchValue}

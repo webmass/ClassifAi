@@ -3,17 +3,20 @@ import Database from 'services/Database';
 import TensorFlowService from 'services/TensorFlowService';
 
 class ModelService {
-    static isCommunityId = (id) => !id.toString().match(/^\d+$/);
+    static isCommunityId = (id) => {
+        if(!id) return null;
+        return !id.toString().match(/^\d+$/);
+    };
     static getModelItem = (id) => {
         const isCommunityModel = this.isCommunityId(id);
         const getterService = isCommunityModel ? ArweaveService : Database;
         return getterService.getModelItem(id);
     };
-    static getModelDatasetItem = (modelItem) => {
-        if(modelItem.isCommunityModel){
-            return ArweaveService.getModelDatasetItem(modelItem.datasetRefId);
+    static getModelDatasetItem = id => {
+        if(this.isCommunityId(id)){
+            return ArweaveService.getModelDatasetItem(id);
         } else {
-            return Database.getModelDatasetItem(modelItem.id);
+            return Database.getModelDatasetItem(id);
         }
     };
     static saveCommunityDatasetToLocal = async (communityModelId, modelId) => {
@@ -34,15 +37,25 @@ class ModelService {
         await Database.saveModelDatasetItem(dataset);
         return {nbTrainingsUpdateNeeded};
     };
-    static updateNbTrainings = async (modelItem, updateModelItem) => {
+    static getUpdatedNbTrainings = async (modelItem) => {
         const datasetItem = await Database.getModelDatasetItem(modelItem.id);
         TensorFlowService.clear();
         TensorFlowService.setKnnDataset(datasetItem.data);
-        const nbTrainings = TensorFlowService.getNbTrainings();
-        const updated = {...modelItem, nbTrainings};
-        updateModelItem(updated);
-        await Database.saveModelItem(updated);
-        return updated;
+        return TensorFlowService.getNbTrainings();
+    };
+    static restoreTraining = async (datasetRefId, handleRestoreSuccess, handleRestoreFailed) => {
+        TensorFlowService.clear();
+        ModelService.getModelDatasetItem(datasetRefId)
+            .then(datasetItem => {
+                if(datasetItem){
+                    TensorFlowService.setKnnDataset(datasetItem.data);
+                    handleRestoreSuccess(datasetItem);
+                } else {
+                    handleRestoreFailed();
+                }
+                return datasetItem;
+            })
+            .catch(handleRestoreFailed);
     };
 }
 

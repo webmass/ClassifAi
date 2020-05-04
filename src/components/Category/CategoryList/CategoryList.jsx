@@ -1,7 +1,7 @@
 import React from 'react';
 import {List, ListItem} from '@material-ui/core';
 import CategoryListItem from 'components/Category/CategoryListItem/CategoryListItem';
-import PropTypes from 'prop-types';
+import { T_CATEGORIES } from 'types';
 
 const CategoryList = ({ categories }) => {
     const listItems = categories.map(category => {
@@ -20,7 +20,7 @@ const CategoryList = ({ categories }) => {
 };
 
 CategoryList.propTypes = {
-    categories: PropTypes.arrayOf(PropTypes.string).isRequired
+    categories: T_CATEGORIES.isRequired
 };
 
 export default CategoryList;

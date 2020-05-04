@@ -10,14 +10,11 @@ const modelsSlice = RTK.createSlice({
         updateModelItem: (state, {payload}) => {
             let model = state.find(model => model.id === payload.id);
             if (model) {
-                model.name = payload.name;
-                model.description = payload.description;
-                model.categories = payload.categories;
-                model.nbTrainings = payload.nbTrainings;
+                Object.assign(model, payload);
             }
         },
         updateModels: (state, {payload}) => state.splice().concat(payload),
-        removeModelItem: (state, {payload}) => state.filter(model => model.id !== payload.id)
+        removeModelItem: (state, {payload}) => state.filter(model => model.id !== payload)
     }
 });
 

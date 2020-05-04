@@ -1,85 +1,41 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { Typography, Button, Card, CardContent, CardHeader } from '@material-ui/core';
-import TensorFlowService from 'services/TensorFlowService';
-import * as tf from '@tensorflow/tfjs';
 import styles from './LiveModel.module.scss';
 import Message from 'components/Message/Message';
 import LottieAnimation from 'components/LottieAnimation/LottieAnimation';
-import ModelService from 'services/ModelService';
 import LiveModelActions from 'components/LiveModel/LiveModelActions';
-import { T_MODEL_ITEM } from 'types';
+import { T_CHILDREN, T_MODEL_ITEM } from 'types';
+import PropTypes from 'prop-types';
 
-const LiveModel = ({modelItem}) => {
-    const {id, description, isCommunityModel} = modelItem;
-    const [hasCameraError, setHasCameraError] = useState(false);
-    const [isWaitingCamera, setIsWaitingCamera] = useState(true);
-    const [isDatasetReady, setIsDatasetReady] = useState(false);
-    const [result, setResult] = useState({label: '...'});
-    const classifier = TensorFlowService.getKnnClassifier();
-    const videoRef = useRef(null);
-    const webcam = useRef(null);
-    const isMountedRef = useRef(true);
-
-    const handleCameraStatus = (hasError) => {
-        setIsWaitingCamera(hasError);
-        setHasCameraError(hasError);
-    };
-
-    const initWebcam = useCallback(async () => {
-        setIsWaitingCamera(true);
-        const currentWebcam = await tf.data.webcam(videoRef.current).catch(() => null);
-        handleCameraStatus(!currentWebcam);
-        webcam.current = currentWebcam;
-    }, []);
-
-    useEffect(() => {
-        const handleRestoreFailed = () => {
-            if(isMountedRef.current) {
-                setResult({
-                    label: isCommunityModel ? 'Training data still publishing...' : 'hmm...Teach me first !'
-                })
-            }
-        };
-        const handleRestoreSuccess = (datasetItem) => {
-            if(datasetItem && isMountedRef.current){
-                setIsDatasetReady(true);
-                TensorFlowService.setKnnDataset(datasetItem.data);
-            } else {
-                handleRestoreFailed();
-            }
-            return datasetItem;
-        };
-        const restoreTeachings = () => {
-            TensorFlowService.clear();
-            ModelService.getModelDatasetItem(modelItem)
-                .then(datasetItem => handleRestoreSuccess(datasetItem))
-                .catch(handleRestoreFailed);
-        };
-        const workWithCamera = async () => {
-            await initWebcam();
-            while (isMountedRef.current) {
-                if (webcam.current && classifier.getNumClasses() > 0) {
-                    const img = await webcam.current.capture().catch(() => null);
-                    if (img) {
-                        const prediction = await TensorFlowService.getImageKnnPrediction(img);
-                        if (isMountedRef.current) setResult(prediction);
-                        img.dispose();
-                    }
-                }
-                await tf.nextFrame();
-            }
-        };
-        restoreTeachings();
-        workWithCamera();
-        return () => isMountedRef.current = false;
-    }, [id, isCommunityModel, classifier, initWebcam]);
-
+const LiveModel = ({
+                       children,
+                       modelItem,
+                       saveModelItem,
+                       initWebcam,
+                       classificationResult,
+                       isDatasetReady,
+                       isWaitingCamera,
+                       hasCameraError,
+                       webcam
+                   }) => {
     return (
         <div className={styles.container}>
             <Card className={styles.card} raised={true}>
-                <CardHeader title={description} subheader={`IA's guess : ${result.label}`}/>
+                <CardHeader
+                    title={
+                        <Typography variant='subtitle1' gutterBottom={true}>{modelItem.description}</Typography>
+                    }
+                    titleTypographyProps={{variant: 'subtitle1', gutterBottom: true}}
+                    disableTypography={true}
+                    subheader={(
+                        <React.Fragment>
+                            <Typography color='primary' variant='body1'>IA's guess : </Typography>
+                            <Typography variant='body1' noWrap={true}>{classificationResult}</Typography>
+                        </React.Fragment>
+                    )}
+                />
                 <CardContent className={styles.cardContent}>
-                    <video className={styles.video} ref={videoRef} autoPlay playsInline muted width="224" height="224"/>
+                    {children}
                     {
                         isWaitingCamera ?
                             <div className={styles.lottie}>
@@ -96,7 +52,11 @@ const LiveModel = ({modelItem}) => {
                             <Button color="primary" onClick={initWebcam}>Retry</Button>
                         </Message.Error>
                         :
-                        <LiveModelActions modelItem={modelItem} webcam={webcam} isDatasetReady={isDatasetReady}/>
+                        <LiveModelActions
+                            modelItem={modelItem}
+                            saveModelItem={saveModelItem}
+                            webcam={webcam}
+                            isDatasetReady={isDatasetReady}/>
                 }
             </Card>
         </div>
@@ -104,7 +64,15 @@ const LiveModel = ({modelItem}) => {
 };
 
 LiveModel.propTypes = {
-    modelItem: T_MODEL_ITEM
+    children: T_CHILDREN,
+    modelItem: T_MODEL_ITEM.isRequired,
+    saveModelItem: PropTypes.func.isRequired,
+    initWebcam: PropTypes.func.isRequired,
+    classificationResult: PropTypes.string.isRequired,
+    isDatasetReady: PropTypes.bool.isRequired,
+    hasCameraError: PropTypes.bool.isRequired,
+    isWaitingCamera: PropTypes.bool.isRequired,
+    webcam: PropTypes.object
 };
 
 export default LiveModel;

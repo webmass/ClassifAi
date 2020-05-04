@@ -5,11 +5,11 @@ import classnames from 'classnames';
 import { T_CHILDREN } from 'types';
 import PropTypes from 'prop-types';
 
-const PageContainer = ({children, hasTopBar = true, hasBottomBar = false, isCentered = false, className}) => {
+const PageContainer = ({children, addTopBarPadding = true, addBottomBarPadding = false, isCentered = false, className}) => {
     return (
         <div className={classnames(styles.Page, {
-            [styles.withTopBar]: hasTopBar,
-            [styles.withBottomBar]: hasBottomBar,
+            [styles.topBarPadding]: addTopBarPadding,
+            [styles.bottomBarPadding]: addBottomBarPadding,
             [styles.centered]: isCentered,
             [className]: !!className
         })}>{children}</div>
@@ -35,8 +35,8 @@ class Page extends React.Component {
 
 Page.propTypes = {
     children: T_CHILDREN.isRequired,
-    hasTopBar: PropTypes.bool,
-    hasBottomBar: PropTypes.bool,
+    addTopBarPadding: PropTypes.bool,
+    addBottomBarPadding: PropTypes.bool,
     isCentered: PropTypes.bool,
     className: PropTypes.string,
 };

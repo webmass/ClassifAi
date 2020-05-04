@@ -12,6 +12,9 @@ import Message from 'components/Message/Message';
 import ModelDeleter from 'components/Model/ModelDeleter/ModelDeleter';
 import ModelSaveBar from 'components/Model/ModelSaveBar/ModelSaveBar';
 import ModelService from 'services/ModelService';
+import useModelItem from 'hooks/useModelItem';
+import { ROUTES } from 'app/constants';
+import { getModelDetailsRoute } from 'services/RoutingService';
 
 const initialState = {name: '', description: '', categories: []};
 
@@ -20,12 +23,13 @@ const ModelForm = () => {
     const formRef = useRef(null);
     const [isFormValid, setIsFormValid] = useState(false);
     const isMountedRef = useRef(true);
-    const [modelItem, setModelItem] = useState(initialState);
-    const [renamedCategories, setRenamedCategories] = useState({});
-    const [modelContext] = useState({setModelItem, setRenamedCategories});
-    modelContext.modelItem = modelItem;
-    modelContext.renamedCategories = renamedCategories;
     const [hasError, setHasError] = useState(false);
+    const {saveModelItem, removeModelItem} = useModelItem(id);
+    const [formData, setFormData] = useState(initialState);
+    const [renamedCategories, setRenamedCategories] = useState({});
+    const [modelContext] = useState({setFormData, setRenamedCategories});
+    modelContext.formData = formData;
+    modelContext.renamedCategories = renamedCategories;
 
     const handleError = () => {
         if (!isMountedRef.current) return;
@@ -33,21 +37,21 @@ const ModelForm = () => {
     };
 
     const handleChange = (field, value) => {
-        setModelItem({...modelItem, [field]: value});
+        setFormData({...formData, [field]: value});
     };
 
     useEffect(() => {
-        setIsFormValid(formRef.current && formRef.current.checkValidity() && modelItem.categories.length > 1);
+        setIsFormValid(formRef.current && formRef.current.checkValidity() && formData.categories.length > 1);
         return () => isMountedRef.current = false;
-    }, [modelItem.name, modelItem.description, modelItem.categories]);
+    }, [formData.name, formData.description, formData.categories]);
 
     useEffect(() => {
-        if (id && !modelItem.id) {
+        if (id && !formData.id) {
             const handleResponse = result => {
                 if (!isMountedRef.current) return;
                 if (result) {
                     setHasError(false);
-                    setModelItem(result);
+                    setFormData(result);
                 } else handleError();
             };
             ModelService.getModelItem(id)
@@ -55,25 +59,25 @@ const ModelForm = () => {
                 .catch(handleError);
         }
         return () => isMountedRef.current = false;
-    }, [id, modelItem.id]);
+    }, [id, formData.id]);
 
     return (
         <ModelContext.Provider value={modelContext}>
             <Page hasBottomBar={true}>
-                <TopBar title='Model Form'>
-                    {modelItem.id && !modelItem.isCommunityModel ? <ModelDeleter modelItem={modelItem}/> : null}
+                <TopBar title='Model Form' backPath={id ? getModelDetailsRoute(id) : ROUTES.HOME}>
+                    {formData.id && !formData.isCommunityModel ? <ModelDeleter formData={formData} removeModelItem={removeModelItem}/> : null}
                 </TopBar>
                 {hasError ? <Message.Error/> : null}
                 <form ref={formRef} className={styles.form} noValidate autoComplete="off">
                     <Grid container spacing={3}>
                         <Grid item xs={12}>
-                            <StyledTextField label="Name" value={modelItem.name} variant="outlined" required={true}
+                            <StyledTextField label="Name" value={formData.name} variant="outlined" required={true}
                                              fullWidth
                                              onChange={e => handleChange('name', e.target.value)}/>
                         </Grid>
                         <Grid item xs={12}>
                             <StyledTextField label="Description"
-                                             value={modelItem.description}
+                                             value={formData.description}
                                              variant="outlined"
                                              multiline={true}
                                              required={true}
@@ -89,11 +93,11 @@ const ModelForm = () => {
                             <CategoryAdder/>
                         </Grid>
                         <Grid item xs={12}>
-                            <CategoryList categories={modelItem.categories}/>
+                            <CategoryList categories={formData.categories}/>
                         </Grid>
                     </Grid>
                 </form>
-                <ModelSaveBar isFormValid={isFormValid} modelItem={modelItem} renamedCategories={renamedCategories}/>
+                <ModelSaveBar saveModelItem={saveModelItem} isFormValid={isFormValid} formData={formData} renamedCategories={renamedCategories}/>
             </Page>
         </ModelContext.Provider>
     );

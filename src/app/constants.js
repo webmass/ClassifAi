@@ -1,15 +1,17 @@
 // ROUTES
+export const SEARCH = {
+    BASE: 'search',
+    KEY: 'searchType',
+    LOCAL: 'myModels',
+    COMMUNITY: 'community'
+};
 export const ROUTES = {
     HOME: '/home',
     MODEL_DETAILS: '/model_details',
     MODEL_FORM: '/model_form',
     ACCOUNT: '/account',
-    SEARCH: '/search'
-};
-export const SEARCH_TYPES = {
-    key: 'searchType',
-    myModels: 'myModels',
-    community: 'community'
+    SEARCH_LOCAL: `/${SEARCH.BASE}/${SEARCH.LOCAL}`,
+    SEARCH_COMMUNITY: `/${SEARCH.BASE}/${SEARCH.COMMUNITY}`,
 };
 // DB
 export const DB_NAME = 'permaweb-image-classifier';

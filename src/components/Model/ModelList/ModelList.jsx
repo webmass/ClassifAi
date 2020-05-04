@@ -1,7 +1,6 @@
 import React from 'react';
 import ModelListItem from 'components/Model/ModelListItem/ModelListItem';
-import { T_MODEL_ITEM } from 'types';
-import PropTypes from 'prop-types';
+import { T_MODELS } from 'types';
 
 const ModelList = ({models}) => {
     const items = models.map(modelItem => <ModelListItem key={modelItem.id} modelItem={modelItem} />);
@@ -9,7 +8,7 @@ const ModelList = ({models}) => {
 };
 
 ModelList.propTypes = {
-    models: PropTypes.arrayOf(T_MODEL_ITEM).isRequired
+    models: T_MODELS.isRequired
 };
 
 export default ModelList;
