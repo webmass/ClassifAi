@@ -3,17 +3,20 @@ import * as knn from '@tensorflow-models/knn-classifier';
 import * as tf from '@tensorflow/tfjs';
 
 class TensorFlowService {
-    static #model;
+    static #localBaseModelPath = 'indexeddb://base_model';
+    static #mobilenet;
     static #knnClassifier = knn.create();
-    static getModel = () => this.#model;
-    static getKnnClassifier = () => this.#knnClassifier;
 
     static initBaseModel = async (modelFile = 'model.json', version = 1, alpha = 1) => {
-        this.#model = await mobilenet.load({
+        const hasCachedBaseModel = !!await tf.loadGraphModel(this.#localBaseModelPath);
+        this.#mobilenet = await mobilenet.load({
             version,
             alpha,
-            modelUrl: `${process.env.PUBLIC_URL}/model/${modelFile}`,
+            modelUrl: hasCachedBaseModel ? this.#localBaseModelPath : undefined
         });
+        if(hasCachedBaseModel) {
+            this.#mobilenet.model.save('indexeddb://base_model');
+        }
     };
 
     static clear = () => {
@@ -31,12 +34,12 @@ class TensorFlowService {
     };
 
     static trainCategory = (category, img) => {
-        const activation = this.#model.infer(img, 'conv_preds');
+        const activation = this.#mobilenet.infer(img, 'conv_preds');
         this.#knnClassifier.addExample(activation, category);
     };
 
     static getImageKnnPrediction = async (image) => {
-        const activation = this.#model.infer(image, 'conv_preds');
+        const activation = this.#mobilenet.infer(image, 'conv_preds');
         const classifications = await this.#knnClassifier.predictClass(activation).catch(() => []);
         return {
             label: classifications.label
