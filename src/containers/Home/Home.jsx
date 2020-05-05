@@ -41,7 +41,7 @@ const Home = ({updateLastSearchValue, lastSearchValue}) => {
 
     return (
         <Page addTopBarPadding={false} isCentered={true}>
-            <TopBar hasBackButton={false} title='Permaweb Image Classifier' titleAlign='center'>
+            <TopBar hasBackButton={false} title='ClassifAi' titleAlign='center'>
                 <IconButton onClick={handleAccount}>
                     {wallet ? <Person/> : <PersonOutline/>}
                 </IconButton>

@@ -2,11 +2,14 @@
   "name": "permaweb-imgage-classifier",
   "version": "0.1.0",
   "private": false,
-  "description": "Arweave project using tensorflow.js",
+  "description": "An Image Classification web app built on React / Redux, TensorFlow.js and Arweave",
   "keywords": [
+    "react",
     "arweave",
     "tensorflow",
-    "react"
+    "permaweb",
+    "blockchain",
+    "ML"
   ],
   "author": "Massis ORER",
   "license": "MIT",
