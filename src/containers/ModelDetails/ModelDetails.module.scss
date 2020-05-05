@@ -1,12 +1,21 @@
 $videoSize: 224px;
+
 .container {
     padding-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-.video {
+.videoWrapper {
+    padding: 15px;
+    border-radius: 25px;
     border: 2px solid #cccccc;
+    display: inline-flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
+.video {
     width: $videoSize;
     height: $videoSize;
 }

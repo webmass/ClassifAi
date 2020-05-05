@@ -105,7 +105,10 @@ const ModelDetails = () => {
                     webcam={webcam}
                     initWebcam={initWebcam}
                 >
-                    <video className={styles.video} ref={videoRef} autoPlay playsInline muted width="224" height="224"/>
+                    <div className={styles.videoWrapper}>
+                        <video className={styles.video} ref={videoRef} autoPlay playsInline muted width="224"
+                               height="224"/>
+                    </div>
                 </LiveModel>
             </div>
             {isCommunityModel || !wallet ? null : <ModelPublishBar modelItem={modelItem}/>}

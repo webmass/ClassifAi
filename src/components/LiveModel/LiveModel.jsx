@@ -23,9 +23,9 @@ const LiveModel = ({
             <Card className={styles.card} raised={true}>
                 <CardHeader
                     title={
-                        <Typography variant='subtitle1' gutterBottom={true}>{modelItem.description}</Typography>
+                        <Typography variant='subtitle1'>{modelItem.description}</Typography>
                     }
-                    titleTypographyProps={{variant: 'subtitle1', gutterBottom: true}}
+                    titleTypographyProps={{variant: 'subtitle1'}}
                     disableTypography={true}
                     subheader={(
                         <React.Fragment>
@@ -34,7 +34,7 @@ const LiveModel = ({
                         </React.Fragment>
                     )}
                 />
-                <CardContent className={styles.cardContent}>
+                <CardContent className={styles.cardContent} style={{paddingTop: 0}}>
                     {children}
                     {
                         isWaitingCamera ?

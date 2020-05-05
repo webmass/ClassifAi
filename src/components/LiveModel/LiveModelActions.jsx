@@ -52,7 +52,7 @@ const LiveModelActions = ({modelItem, saveModelItem, isDatasetReady, webcam}) =>
     };
 
     const buttons = modelItem.categories
-        .map(category => <Button color='primary' key={category}
+        .map(category => <Button color='primary' key={category} variant='outlined'
                                  onMouseDown={() => handleCapture(category)}>{category}</Button>);
 
     const trainingInfo = <Typography variant='body2' gutterBottom={true}>
