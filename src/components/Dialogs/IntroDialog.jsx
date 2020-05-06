@@ -14,19 +14,19 @@ const IntroDialog = ({onClose}) => {
                 <Typography variant='h4' color={'primary'} gutterBottom={true}>
                     Welcome !
                 </Typography>
-                <Grid container spacing={4}>
+                <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <Typography variant='body1'>
-                            This web app let's you create and train image classifications models, it's optimized for mobile devices and offline.
+                            This web app let's you create and train Image Classification models.
                         </Typography>
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant='body1'>
-                            Basically you teach the IA with your camera to which category the current image belongs to, once teached the IA can then guess what is on the camera !
+                            The more you train the IA, the more its guesses will be accurate !
                         </Typography>
                     </Grid>
                     <Grid item xs={12}>
-                        <Typography variant='body1' gutterBottom={true}>
+                        <Typography variant='body2' gutterBottom={true}>
                             To unlock the community models and the publish feature, check out the login page.
                         </Typography>
                     </Grid>

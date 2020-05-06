@@ -13,7 +13,7 @@ const LiveModel = ({
                        saveModelItem,
                        initWebcam,
                        classificationResult,
-                       isDatasetReady,
+                       isDatasetLoadingEnded,
                        isWaitingCamera,
                        hasCameraError,
                        webcam
@@ -56,7 +56,7 @@ const LiveModel = ({
                             modelItem={modelItem}
                             saveModelItem={saveModelItem}
                             webcam={webcam}
-                            isDatasetReady={isDatasetReady}/>
+                            isDatasetLoadingEnded={isDatasetLoadingEnded}/>
                 }
             </Card>
         </div>
@@ -69,7 +69,7 @@ LiveModel.propTypes = {
     saveModelItem: PropTypes.func.isRequired,
     initWebcam: PropTypes.func.isRequired,
     classificationResult: PropTypes.string.isRequired,
-    isDatasetReady: PropTypes.bool.isRequired,
+    isDatasetLoadingEnded: PropTypes.bool.isRequired,
     hasCameraError: PropTypes.bool.isRequired,
     isWaitingCamera: PropTypes.bool.isRequired,
     webcam: PropTypes.object

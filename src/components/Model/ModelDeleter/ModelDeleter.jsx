@@ -1,20 +1,20 @@
 import { Delete } from '@material-ui/icons';
 import { IconButton } from '@material-ui/core';
 import React from 'react';
-import { goHome } from 'services/RoutingService';
-import { useHistory } from 'react-router-dom';
 import DialogService from 'services/DialogService';
 import { T_MODEL_ITEM } from 'types';
 import PropTypes from 'prop-types';
+import useRouting from 'hooks/useRouting';
+import { ROUTES } from 'app/constants';
 
 const ModelDeleter = ({formData, removeModelItem}) => {
-    const history = useHistory();
+    const routing = useRouting();
     const handleConfirmedDelete =  async (showResult, onClose) => {
         return new Promise((resolve, reject) => {
             removeModelItem()
                 .then(() => {
                     showResult('success');
-                    goHome(history, true);
+                    routing.push(ROUTES.SEARCH_LOCAL);
                     return resolve();
                 })
                 .catch(() => showResult('error'))

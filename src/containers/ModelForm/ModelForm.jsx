@@ -76,14 +76,11 @@ const ModelForm = () => {
                                              onChange={e => handleChange('name', e.target.value)}/>
                         </Grid>
                         <Grid item xs={12}>
-                            <StyledTextField label="Description"
+                            <StyledTextField label="Short Description"
                                              value={formData.description}
                                              variant="outlined"
-                                             multiline={true}
                                              required={true}
                                              fullWidth
-                                             rows={2}
-                                             rowsMax={3}
                                              onChange={e => handleChange('description', e.target.value)}/>
                         </Grid>
                         <Grid item xs={12}>

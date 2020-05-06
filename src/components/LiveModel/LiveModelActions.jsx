@@ -6,14 +6,12 @@ import Database from 'services/Database';
 import * as tf from '@tensorflow/tfjs';
 import { getModelFormRoute } from 'services/RoutingService';
 import DialogService from 'services/DialogService';
-import ListItem from '@material-ui/core/ListItem';
-import List from '@material-ui/core/List';
-import LottieAnimation from 'components/LottieAnimation/LottieAnimation';
 import PropTypes from 'prop-types';
 import { T_MODEL_ITEM } from 'types';
 import useRouting from 'hooks/useRouting';
+import Message from 'components/Message/Message';
 
-const LiveModelActions = ({modelItem, saveModelItem, isDatasetReady, webcam}) => {
+const LiveModelActions = ({modelItem, saveModelItem, isDatasetLoadingEnded, webcam}) => {
     const routing = useRouting();
 
     const refreshTrainingInfo = async () => {
@@ -33,22 +31,7 @@ const LiveModelActions = ({modelItem, saveModelItem, isDatasetReady, webcam}) =>
     const handleTeachingsDetails = () => {
         if(!modelItem.nbTrainings) return;
         const categoriesCounts = TensorFlowService.getCategoriesCounts();
-        const counts = Object.keys(categoriesCounts)
-            .map(category => <ListItem key={category}>- {category} : {categoriesCounts[category]}</ListItem>);
-        DialogService.showCustom(({onClose}) => {
-            return (
-                <div align='center'>
-                    <LottieAnimation animationName='information' width={100} height={100} loop={true}/>
-                    <Typography color={'primary'}>
-                        Number of images teached to each category :
-                    </Typography>
-                    <List>
-                        {counts}
-                    </List>
-                    <Button color='primary' onClick={onClose}>CLOSE</Button>
-                </div>
-            )
-        });
+        DialogService.showTrainingDetails(categoriesCounts);
     };
 
     const buttons = modelItem.categories
@@ -62,7 +45,12 @@ const LiveModelActions = ({modelItem, saveModelItem, isDatasetReady, webcam}) =>
     </Typography>;
 
     if (modelItem.isCommunityModel) {
-        if(!isDatasetReady) return null;
+        if(!isDatasetLoadingEnded) return <Message.Loading/>;
+        else if(!TensorFlowService.getNbTrainings()){
+            return <Typography variant='body2' color='textSecondary' gutterBottom={true}>
+                Please come back later when publishing is fully completed
+            </Typography>;
+        }
         const handleEdit = () => routing.push(getModelFormRoute(modelItem.id));
         return (
             <React.Fragment>
@@ -89,7 +77,7 @@ const LiveModelActions = ({modelItem, saveModelItem, isDatasetReady, webcam}) =>
 
 LiveModelActions.propTypes = {
     modelItem: T_MODEL_ITEM.isRequired,
-    isDatasetReady: PropTypes.bool.isRequired,
+    isDatasetLoadingEnded: PropTypes.bool.isRequired,
     saveModelItem: PropTypes.func.isRequired,
     webcam: PropTypes.object.isRequired
 };

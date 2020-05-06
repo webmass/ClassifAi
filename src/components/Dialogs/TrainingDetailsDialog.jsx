@@ -21,6 +21,15 @@ const TrainingDetailsDialog = ({counts, onClose}) => {
                 <List>
                     {listItems}
                 </List>
+                <Typography variant={'body2'} gutterBottom={true}>
+                    The more the model is trained and the more its guesses will be accurate.
+                </Typography>
+                <Typography variant={'body2'} gutterBottom={true}>
+                    Moreover it's better to have a balanced number of images for each category.
+                </Typography>
+                <Typography variant={'body2'} gutterBottom={true}>
+                    Visible image context also matters.
+                </Typography>
                 <Button color='primary' onClick={onClose}>Close</Button>
             </div>
         </SimpleDialog>
@@ -28,7 +37,7 @@ const TrainingDetailsDialog = ({counts, onClose}) => {
 };
 
 TrainingDetailsDialog.propTypes = {
-    counts: PropTypes.number.isRequired,
+    counts: PropTypes.objectOf(PropTypes.number).isRequired,
     onClose: PropTypes.func.isRequired,
 };
 

@@ -21,8 +21,8 @@ const ModelDetails = () => {
     const isCommunityModel = ModelService.isCommunityId(id);
     const history = useHistory();
     const {wallet} = useContext(AppContext);
-    const {modelItem, saveModelItem, isLoading, hasError} = useModelItem(id);
-    const [isDatasetReady, setIsDatasetReady] = useState(false);
+    const {modelItem, saveModelItem, isLoading} = useModelItem(id);
+    const [isDatasetLoadingEnded, setIsDatasetLoadingEnded] = useState(false);
     const [isWaitingCamera, setIsWaitingCamera] = useState(false);
     const [hasCameraError, setHasCameraError] = useState(false);
     const [result, setResult] = useState('...');
@@ -33,7 +33,7 @@ const ModelDetails = () => {
 
     const handleEdit = () => history.push({pathname: getModelFormRoute(id), state: {from: 'details'}});
 
-    const handleCameraStatus = (hasError) => {
+    const handleCameraStatus = hasError => {
         setIsWaitingCamera(hasError);
         setHasCameraError(hasError);
     };
@@ -51,13 +51,15 @@ const ModelDetails = () => {
         isMountedRef.current = true;
         const showNoTrainingInfo = () => setResult(isCommunityModel ? 'Training data still publishing...' : 'hmm...Teach me first !');
         const handleRestoreFailed = () => {
-            if(isMountedRef.current) showNoTrainingInfo();
+            if(isMountedRef.current) {
+                setIsDatasetLoadingEnded(true);
+                showNoTrainingInfo();
+            }
         };
         const handleRestoreSuccess = datasetItem => {
             if(isMountedRef.current){
-                if(datasetItem && datasetItem.data && Object.keys(datasetItem.data).length){
-                    setIsDatasetReady(true);
-                } else {
+                setIsDatasetLoadingEnded(true);
+                if(!datasetItem || !datasetItem.data || !Object.keys(datasetItem.data).length){
                     showNoTrainingInfo();
                 }
             }
@@ -84,8 +86,7 @@ const ModelDetails = () => {
         return () => isMountedRef.current = false;
     }, [modelItem.id, modelItem.datasetRefId, isCommunityModel, initWebcam]);
 
-    if (hasError) return <Page.Error>Model not found</Page.Error>;
-    else if (isLoading){
+    if (isLoading){
         return <Message.Loading/>;
     }
 
@@ -99,7 +100,7 @@ const ModelDetails = () => {
                     modelItem={modelItem}
                     saveModelItem={saveModelItem}
                     classificationResult={result}
-                    isDatasetReady={isDatasetReady}
+                    isDatasetLoadingEnded={isDatasetLoadingEnded}
                     isWaitingCamera={isWaitingCamera}
                     hasCameraError={hasCameraError}
                     webcam={webcam}

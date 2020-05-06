@@ -7,6 +7,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import './index.css';
 import Database from 'services/Database';
 import storeConfig, { rehydrateStore} from 'store/storeConfig';
+import moment from 'moment';
 
 Database
     .init()
@@ -23,6 +24,25 @@ Database
     })
     .catch()
 ;
+
+moment.locale('en', {
+    relativeTime: {
+        future: 'in %s',
+        past: '%s ago',
+        s:  'a few secs',
+        ss: '%ss',
+        m:  'a min',
+        mm: '%d mins',
+        h:  'an hour',
+        hh: '%dh',
+        d:  'a day',
+        dd: '%d days',
+        M:  'a month',
+        MM: '%d months',
+        y:  'a year',
+        yy: '%d years'
+    }
+});
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

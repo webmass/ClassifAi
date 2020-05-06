@@ -4,6 +4,8 @@ import Message from 'components/Message/Message';
 import classnames from 'classnames';
 import { T_CHILDREN } from 'types';
 import PropTypes from 'prop-types';
+import TopBar from 'components/TopBar/TopBar';
+import { ROUTES } from 'app/constants';
 
 const PageContainer = ({children, addTopBarPadding = true, addBottomBarPadding = false, isCentered = false, className}) => {
     return (
@@ -19,7 +21,8 @@ const PageContainer = ({children, addTopBarPadding = true, addBottomBarPadding =
 class Page extends React.Component {
     static Error = ({children, ...props}) =>
         (
-            <PageContainer {...props}>
+            <PageContainer addTopBarPadding={false} isCentered={true} {...props}>
+                <TopBar backPath={ROUTES.HOME}/>
                 <div>
                     <Message.Error>{children}</Message.Error>
                 </div>

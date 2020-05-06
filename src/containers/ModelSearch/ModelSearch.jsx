@@ -43,8 +43,8 @@ const ModelSearch = ({localModels, communityModels, lastSearchValue, updateLastS
 
         ArweaveService.getAllModels()
             .then(handleCommunitySuccess)
-            .finally(() => isMountedRef.current ? setIsLoading(false) : null)
             .catch(handleCommunityError)
+            .finally(() => isMountedRef.current ? setIsLoading(false) : null).catch();
     }, [communityModels.length, updateCommunityModels]);
 
     const search = useCallback((value) => {

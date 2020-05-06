@@ -20,9 +20,15 @@ const StyledTextField = withStyles({
     input: {
         color: 'white'
     }
-})(({ classes, InputProps = {}, ...other }) => (
-    <TextField style={{color: 'white'}} className={classes.root} {...other} InputProps={{
-        className: classes.input, ...InputProps
-    }}/>
-));
+})(({classes, InputProps = {}, inputProps = {}, ...other}) => {
+    return (
+        <TextField style={{color: 'white'}} className={classes.root} {...other}
+                   inputProps={{
+                       maxLength: 35, ...inputProps
+                   }}
+                   InputProps={{
+                       className: classes.input, ...InputProps
+                   }}/>
+    )
+});
 export default StyledTextField;

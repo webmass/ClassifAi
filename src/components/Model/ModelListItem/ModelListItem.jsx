@@ -45,7 +45,7 @@ const ModelListItem = ({modelItem}) => {
             <Typography variant='body2' display='block' color='textPrimary'
                         noWrap={true}>{modelItem.description}</Typography>
             <Typography variant='body2' color='textPrimary' noWrap={true} className={styles.itemFooter}>
-                <i>{modelItem.nbTrainings ? `Trained with ${modelItem.nbTrainings} images` : 'The model is not trained yet'}</i>
+                <i>{modelItem.nbTrainings ? `Trained with ${modelItem.nbTrainings} images` : 'Model not trained yet'}</i>
                 <span className={styles.timeInfo}>{timeInfo}</span>
             </Typography>
         </div>
