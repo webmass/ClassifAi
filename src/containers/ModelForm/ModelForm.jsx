@@ -63,7 +63,7 @@ const ModelForm = () => {
 
     return (
         <ModelContext.Provider value={modelContext}>
-            <Page hasBottomBar={true}>
+            <Page addBottomBarPadding={true}>
                 <TopBar title='Model Form' backPath={id ? getModelDetailsRoute(id) : ROUTES.HOME}>
                     {formData.id && !formData.isCommunityModel ? <ModelDeleter formData={formData} removeModelItem={removeModelItem}/> : null}
                 </TopBar>

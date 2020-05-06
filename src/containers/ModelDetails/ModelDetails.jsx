@@ -90,7 +90,7 @@ const ModelDetails = () => {
     }
 
     return (
-        <Page hasBottomBar={true}>
+        <Page addBottomBarPadding={true}>
             <TopBar title={modelItem.name} backPath={isCommunityModel ? ROUTES.SEARCH_COMMUNITY : ROUTES.SEARCH_LOCAL }>
                 {isCommunityModel ? null : <IconButton onClick={handleEdit}><Edit/></IconButton>}
             </TopBar>
