@@ -77,6 +77,10 @@ const ModelSearch = ({localModels, communityModels, lastSearchValue, updateLastS
         setFilteredModels(search(searchValue));
     }, [searchValue, search]);
 
+    const listLoadingAnimation = useMemo(() => {
+        return <LottieAnimation animationName='list-loading' height={'100%'} width={'100%'} loop={true}/>;
+    }, []);
+
     return (
         <Page addTopBarPadding={true} className={styles.container}>
             <TopBar isBackToHome={true}>
@@ -94,7 +98,7 @@ const ModelSearch = ({localModels, communityModels, lastSearchValue, updateLastS
             </TopBar>
             <div className={styles.container}>
                 {hasError ? <Message.Error>Could not fetch community models, are you connected to the Internet ?</Message.Error> : null}
-                {isLoading ? <LottieAnimation animationName='list-loading' height={'100%'} width={'100%'}/> : <ModelList models={filteredModels}/>}
+                {isLoading ? listLoadingAnimation : <ModelList models={filteredModels}/>}
             </div>
         </Page>
     );
