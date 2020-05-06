@@ -8,7 +8,7 @@ class TensorFlowService {
     static #knnClassifier = knn.create();
 
     static initBaseModel = async (modelFile = 'model.json', version = 1, alpha = 1) => {
-        const hasCachedBaseModel = !!await tf.loadGraphModel(this.#localBaseModelPath);
+        const hasCachedBaseModel = !!await tf.loadGraphModel(this.#localBaseModelPath).catch(() => null);
         this.#mobilenet = await mobilenet.load({
             version,
             alpha,
