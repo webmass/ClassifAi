@@ -23,7 +23,7 @@ const PublishDialog = ({name, onClose, onConfirm}) => {
                 other people will then be able to use it and perhaps work on it.
             </Typography>
             <Typography variant="body1" gutterBottom={true}>
-                Once on the permaweb it can <b>NEVER</b> be changed, removed or censored because the permaweb relies on
+                Once on the permaweb it can <b>not</b> be changed, removed or censored because the permaweb relies on
                 the decentralized <Link href='https://en.wikipedia.org/wiki/Blockchain' target='_blank'>blockchain</Link> technology.
             </Typography>
         </ConfirmDialog>

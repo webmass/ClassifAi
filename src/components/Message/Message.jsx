@@ -19,6 +19,7 @@ const MessageContent = ({type, animationName, height, width, loop, children}) =>
 class Message extends React.Component {
     static Error = (options) => MessageContent(options);
     static Loading = (options) => MessageContent(options);
+    static Info = (options) => MessageContent(options);
 
     render() {
         return (
@@ -28,7 +29,7 @@ class Message extends React.Component {
 }
 
 Message.defaultProps = {
-    type: 'info',
+    type: 'default',
     animationName: '',
 };
 
@@ -41,9 +42,18 @@ Message.Error.defaultProps = {
 };
 
 Message.Loading.defaultProps = {
+    type: 'default',
     width: 200,
     height: 50,
     animationName: 'progress-bar',
+    loop: true
+};
+
+Message.Info.defaultProps = {
+    type: 'info',
+    width: 100,
+    height: 100,
+    animationName: 'information',
     loop: true
 };
 

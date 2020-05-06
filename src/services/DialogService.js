@@ -15,18 +15,22 @@ class DialogService {
             customUI: renderFunction
         })
     };
-    static showError = (message) => {
+    static showAlert = (children) => {
         this.showCustom(({ onClose }) => {
             return (
                 <SimpleDialog>
                     <div align='center'>
-                        <Message.Error>{message}</Message.Error>
+                        {children}
                         <Button onClick={onClose}>OK</Button>
                     </div>
                 </SimpleDialog>
             );
         });
     };
+
+    static showError = message => this.showAlert(<Message.Error>{message}</Message.Error>);
+    static showInfo = message => this.showAlert(<Message.Info>{message}</Message.Info>);
+
     static showDialog = (Component, options) => {
         this.showCustom(({ onClose }) => {
             return (

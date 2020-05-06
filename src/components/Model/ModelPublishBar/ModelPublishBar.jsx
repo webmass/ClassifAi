@@ -6,6 +6,7 @@ import ArweaveService from 'services/ArweaveService';
 import TensorFlowService from 'services/TensorFlowService';
 import DialogService from 'services/DialogService';
 import { T_MODEL_ITEM } from 'types';
+import { AR_MIN_TRAINING_REQUIRED } from 'app/constants';
 
 const ModelPublishBar = ({modelItem}) => {
     const {wallet} = useContext(AppContext);
@@ -20,7 +21,12 @@ const ModelPublishBar = ({modelItem}) => {
         }
     };
     const handlePublish = () => {
-        DialogService.showPublish(modelItem.name, handleConfirmedPublish);
+        if(modelItem.nbTrainings >= AR_MIN_TRAINING_REQUIRED){
+            DialogService.showPublish(modelItem.name, handleConfirmedPublish);
+        }
+        else {
+            DialogService.showInfo(`Only models trained with ${AR_MIN_TRAINING_REQUIRED} or more images can be published.`);
+        }
     };
     return (
         <AppBar position="fixed" className={styles.bottomBar} style={{top: 'auto'}}>

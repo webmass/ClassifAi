@@ -32,6 +32,7 @@ export const DB_OBJECT_STORES = [
 export const DB_INTRO_DONE_SETTING = 'introDone';
 export const DB_EXAMPLE_ADDED_SETTING = 'exampleAdded';
 // Arweave
+export const AR_MIN_TRAINING_REQUIRED = 100;
 export const AR_APP_NAME = 'ClassifAi';
 export const AR_APP_VERSION = '0';
 export const AR_APP_NAME_TAG = {name: 'App-Name', value: AR_APP_NAME};
