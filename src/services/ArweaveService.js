@@ -46,11 +46,16 @@ class ArweaveService {
     };
 
     static signAndPost = async (payload, tags, last_tx = null, nbAttempts = 0) => {
-        const maxAttempts = 50;
+        const maxAttempts = 100;
+        const delayMs = 1000;
         const transaction = await this.generateSignedTransaction(payload, tags, last_tx);
         const transactionResult = await this.postTransaction(transaction);
         if (this.hasError(transactionResult) && nbAttempts < maxAttempts) {
-            return await this.signAndPost(payload, tags, last_tx, ++nbAttempts);
+            return new Promise(async resolve => {
+                setTimeout(async () => {
+                    resolve(await this.signAndPost(payload, tags, last_tx, ++nbAttempts));
+                }, delayMs);
+            });
         }
         return {transaction, transactionResult};
     };
@@ -227,6 +232,7 @@ class ArweaveService {
             decode: true,
             string: true
         });
+        if(!transactionData) throw new Error('Error getting model');
         const result = JSON.parse(transactionData);
         return {...result, id: modelTransactionId};
     }
