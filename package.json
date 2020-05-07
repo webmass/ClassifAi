@@ -1,14 +1,16 @@
 {
-  "name": "permaweb-imgage-classifier",
-  "version": "0.1.0",
+  "name": "classifai-live",
+  "version": "1.0.0",
   "private": false,
-  "description": "An Image Classification web app built on React / Redux, TensorFlow.js and Arweave",
+  "description": "An Image Classification web app built on React / Redux, TensorFlow.js and Arweave.",
+  "homepage" : ".",
   "keywords": [
     "react",
     "arweave",
-    "tensorflow",
+    "tensorflowjs",
     "permaweb",
     "blockchain",
+    "image",
     "ML"
   ],
   "author": "Massis ORER",

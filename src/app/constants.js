@@ -1,3 +1,4 @@
+export const APP_NAME = 'ClassifAi Live';
 // ROUTES
 export const SEARCH = {
     BASE: 'search',
@@ -14,14 +15,14 @@ export const ROUTES = {
     SEARCH_COMMUNITY: `/${SEARCH.BASE}/${SEARCH.COMMUNITY}`,
 };
 // DB
-export const DB_NAME = 'permaweb-image-classifier';
+export const DB_NAME = APP_NAME.replace(/\s+/g, '-');
 export const DB_VERSION = 2;
 export const DB_SETTINGS = 'SETTINGS';
 export const DB_MODELS = 'MODELS';
 export const DB_DATASETS = 'DATASETS';
 export const DB_EXAMPLE_MODEL = {
-    id: 1, name: 'Example : Thumbs', description: 'Up Or Down ?', nbTrainings: 0, categories: [
-        '👍', 'neutral', '👎'
+    id: 1, name: 'Example : Thumbs', description: 'Up Or Down ?', nbTrainings: 0, isCommunityModel: false, categories: [
+        '👍', 'neutral', '👎',
     ]
 };
 export const DB_OBJECT_STORES = [
@@ -33,7 +34,7 @@ export const DB_INTRO_DONE_SETTING = 'introDone';
 export const DB_EXAMPLE_ADDED_SETTING = 'exampleAdded';
 // Arweave
 export const AR_MIN_TRAINING_REQUIRED = 100;
-export const AR_APP_NAME = 'ClassifAi';
+export const AR_APP_NAME = APP_NAME.replace(/\s+/g, '');
 export const AR_APP_VERSION = '0';
 export const AR_APP_NAME_TAG = {name: 'App-Name', value: AR_APP_NAME};
 export const AR_APP_VERSION_TAG = {name: 'App-Version', value: AR_APP_VERSION};

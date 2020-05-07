@@ -3,7 +3,7 @@ import { Typography, Grid, Container } from '@material-ui/core';
 import { Add, ArrowRight, Person, PersonOutline } from '@material-ui/icons';
 import Page from 'components/Page/Page';
 import styles from './Home.module.scss';
-import { DB_INTRO_DONE_SETTING, ROUTES } from 'app/constants';
+import { APP_NAME, DB_INTRO_DONE_SETTING, ROUTES } from 'app/constants';
 import StyledButton from 'components/StyledButton/StyledButton';
 import AppContext from 'app/AppContext';
 import { connect } from 'react-redux';
@@ -41,7 +41,7 @@ const Home = ({updateLastSearchValue, lastSearchValue}) => {
 
     return (
         <Page addTopBarPadding={false} isCentered={true}>
-            <TopBar hasBackButton={false} title='ClassifAi' titleAlign='center'>
+            <TopBar hasBackButton={false} title={APP_NAME} titleAlign='center'>
                 <IconButton onClick={handleAccount}>
                     {wallet ? <Person/> : <PersonOutline/>}
                 </IconButton>

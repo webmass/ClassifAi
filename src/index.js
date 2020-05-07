@@ -8,6 +8,7 @@ import './index.css';
 import Database from 'services/Database';
 import storeConfig, { rehydrateStore} from 'store/storeConfig';
 import moment from 'moment';
+import { APP_NAME } from 'app/constants';
 
 Database
     .init()
@@ -43,6 +44,8 @@ moment.locale('en', {
         yy: '%d years'
     }
 });
+
+document.title = APP_NAME;
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
