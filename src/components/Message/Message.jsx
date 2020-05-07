@@ -18,6 +18,7 @@ const MessageContent = ({type, animationName, height, width, loop, children}) =>
 
 class Message extends React.Component {
     static Error = (options) => MessageContent(options);
+    static Success = (options) => MessageContent(options);
     static Loading = (options) => MessageContent(options);
     static Info = (options) => MessageContent(options);
 
@@ -55,6 +56,14 @@ Message.Info.defaultProps = {
     height: 100,
     animationName: 'information',
     loop: true
+};
+
+Message.Success.defaultProps = {
+    type: 'success',
+    width: 100,
+    height: 100,
+    animationName: 'checkmark',
+    loop: false
 };
 
 Message.propTypes = {

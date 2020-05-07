@@ -15,19 +15,27 @@ class DialogService {
             customUI: renderFunction
         })
     };
-    static showAlert = (children) => {
+    static showAlert = (children, onCloseExtra = () => {}, autoCloseDelay) => {
         this.showCustom(({ onClose }) => {
+            const handleClose = () => {
+                onCloseExtra();
+                onClose();
+            };
+            if(autoCloseDelay){
+                setTimeout(() => handleClose(), autoCloseDelay);
+            }
             return (
                 <SimpleDialog>
                     <div align='center'>
                         {children}
-                        <Button onClick={onClose}>OK</Button>
+                        {autoCloseDelay ? null : <Button onClick={handleClose}>OK</Button>}
                     </div>
                 </SimpleDialog>
             );
         });
     };
 
+    static showSuccess = (message, onClose, autoCloseDelay) => this.showAlert(<Message.Success>{message}</Message.Success>, onClose, autoCloseDelay);
     static showError = message => this.showAlert(<Message.Error>{message}</Message.Error>);
     static showInfo = message => this.showAlert(<Message.Info>{message}</Message.Info>);
 

@@ -14,6 +14,7 @@ code {
 
 .react-confirm-alert-overlay {
   z-index: 1200;
+  background: white;
 }
 .react-confirm-alert-body-element #root {
   transition-duration: 0.2s;
