@@ -30,7 +30,7 @@ const LiveModel = ({
                     subheader={(
                         <React.Fragment>
                             <Typography color='primary' variant='body1'>IA's guess : </Typography>
-                            <Typography variant='body1' noWrap={true}>{classificationResult}</Typography>
+                            <Typography variant='body2'>{classificationResult}</Typography>
                         </React.Fragment>
                     )}
                 />

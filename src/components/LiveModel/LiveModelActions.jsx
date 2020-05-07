@@ -1,6 +1,7 @@
-import { Button, CardActions, Link, Typography } from '@material-ui/core';
-import styles from 'components/LiveModel/LiveModel.module.scss';
 import React from 'react';
+import { Button, CardActions, Link, Typography } from '@material-ui/core';
+import { AddPhotoAlternate } from '@material-ui/icons';
+import styles from 'components/LiveModel/LiveModel.module.scss';
 import TensorFlowService from 'services/TensorFlowService';
 import Database from 'services/Database';
 import * as tf from '@tensorflow/tfjs';
@@ -29,7 +30,7 @@ const LiveModelActions = ({modelItem, saveModelItem, isDatasetLoadingEnded, webc
     };
 
     const handleTeachingsDetails = () => {
-        if(!modelItem.nbTrainings) return;
+        if (!modelItem.nbTrainings) return;
         const categoriesCounts = TensorFlowService.getCategoriesCounts();
         DialogService.showTrainingDetails(categoriesCounts);
     };
@@ -45,26 +46,30 @@ const LiveModelActions = ({modelItem, saveModelItem, isDatasetLoadingEnded, webc
     </Typography>;
 
     if (modelItem.isCommunityModel) {
-        if(!isDatasetLoadingEnded) return <Message.Loading/>;
-        else if(!TensorFlowService.getNbTrainings()){
+        if (!isDatasetLoadingEnded) return <Message.Loading/>;
+        else if (!TensorFlowService.getNbTrainings()) {
             return <Typography variant='body2' color='textSecondary' gutterBottom={true}>
-                Please come back later when publishing is fully completed
+                Please come back later
             </Typography>;
         }
         const handleEdit = () => routing.push(getModelFormRoute(modelItem.id));
         return (
             <React.Fragment>
-                <Typography variant='body1' gutterBottom={true}>
+                <Typography variant='body2' gutterBottom={true}>
                     This is a Community Model, you can save it to your models if you want to modify it.
                 </Typography>
-                <Button color='primary' onClick={handleEdit}>Save to my models</Button>
+                <Button color='primary' onClick={handleEdit} startIcon={<AddPhotoAlternate/>}>
+                    Save to my models
+                </Button>
             </React.Fragment>
         )
     }
 
     return (
         <div>
-            <Typography color={modelItem.nbTrainings ? 'textPrimary' : 'secondary'}>Teach the IA that the current image is :</Typography>
+            <Typography color={modelItem.nbTrainings ? 'textPrimary' : 'secondary'}>
+                Teach the IA that the current image is :
+            </Typography>
             <div className={styles.actionsWrapper}>
                 <CardActions className={styles.actions}>
                     {buttons}
