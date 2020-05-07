@@ -12,9 +12,9 @@ class ModelService {
         const getterService = isCommunityModel ? ArweaveService : Database;
         return getterService.getModelItem(id);
     };
-    static getModelDatasetItem = id => {
+    static getModelDatasetItem = (id, nbChunks) => {
         if(this.isCommunityId(id)){
-            return ArweaveService.getModelDatasetItem(id);
+            return ArweaveService.getModelDatasetItem(id, nbChunks);
         } else {
             return Database.getModelDatasetItem(id);
         }
@@ -43,9 +43,9 @@ class ModelService {
         TensorFlowService.setKnnDataset(datasetItem.data);
         return TensorFlowService.getNbTrainings();
     };
-    static restoreTraining = async (datasetRefId, handleRestoreSuccess, handleRestoreFailed) => {
+    static restoreTraining = async (datasetRefId, nbChunks, handleRestoreSuccess, handleRestoreFailed) => {
         TensorFlowService.clear();
-        ModelService.getModelDatasetItem(datasetRefId)
+        ModelService.getModelDatasetItem(datasetRefId, nbChunks)
             .then(datasetItem => {
                 if(datasetItem){
                     TensorFlowService.setKnnDataset(datasetItem.data);

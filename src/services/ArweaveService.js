@@ -45,23 +45,40 @@ class ArweaveService {
         };
     };
 
-    static signAndPost = async (payload, tags, last_tx = null, nbAttempts = 0) => {
-        const maxAttempts = 100;
-        const delayMs = 1000;
-        const transaction = await this.generateSignedTransaction(payload, tags, last_tx);
-        const transactionResult = await this.postTransaction(transaction);
-        if (this.hasError(transactionResult) && nbAttempts < maxAttempts) {
+    static doWithRetry = async(fun, maxAttempts = 100, delayMs = 1000, nbAttempts = 0) => {
+        const result = await fun().catch((e) => e.status ? e : {status: 500, message: e.message});
+        if (this.hasError(result) && nbAttempts < maxAttempts) {
             return new Promise(async resolve => {
                 setTimeout(async () => {
-                    resolve(await this.signAndPost(payload, tags, last_tx, ++nbAttempts));
+                    resolve(await this.doWithRetry(fun, maxAttempts, delayMs, ++nbAttempts));
                 }, delayMs);
             });
         }
-        return {transaction, transactionResult};
+        return result;
+    };
+
+    static signAndPost = async (payload, tags, last_tx = null) => {
+        const transaction = await this.generateSignedTransaction(payload, tags, last_tx);
+        const transactionResult = await this.postTransaction(transaction);
+        return {...transactionResult, last_tx: transaction.last_tx};
     };
 
     static postTransaction = async (transaction) => {
         return this.#arweave.transactions.post(transaction);
+    };
+
+    static publishChunk = async (chunkIndex, stringPayload, chunkMaxSize, datasetTags, datasetRefId, publicationTime, last_tx) => {
+        const chunk = stringPayload.substring(chunkIndex * chunkMaxSize, (chunkIndex + 1) * chunkMaxSize);
+        const chunkPayload = {chunkIndex, chunk};
+        const chunkTags = [
+            ...datasetTags,
+            {name: AR_CHUNK_INDEX_TAG_NAME, value: chunkIndex.toString()},
+            {name: AR_MODEL_DATASET_ID_TAG_NAME, value: datasetRefId}
+        ];
+        const transactionResult = await this.doWithRetry(async() => {
+            return await this.signAndPost(chunkPayload, chunkTags, last_tx);
+        }, 100, 1000);
+        return transactionResult;
     };
 
     static publishDataset = async (modelItem, dataset, publicationTime) => {
@@ -78,29 +95,24 @@ class ArweaveService {
         let last_tx = null;
         const nbChunks = Math.ceil(payloadLength / chunkMaxSize);
         for (let i = 0; i * chunkMaxSize < payloadLength; i++) {
-            const chunk = stringPayload.substring(i * chunkMaxSize, (i + 1) * chunkMaxSize);
-            const chunkPayload = {chunkIndex: i, chunk};
-            const chunkTags = [
-                ...datasetTags,
-                {name: AR_CHUNK_INDEX_TAG_NAME, value: i.toString()},
-                {name: AR_MODEL_DATASET_ID_TAG_NAME, value: datasetRefId}
-            ];
-            const {transaction, transactionResult} = await this.signAndPost(chunkPayload, chunkTags, last_tx);
-            if (this.hasError(transactionResult)) return {
-                datasetResult: transactionResult,
-                datasetRefId,
-                publicationTime
-            };
-            last_tx = transaction.last_tx;
+            const result = await this.publishChunk(i, stringPayload, chunkMaxSize, datasetTags, datasetRefId, publicationTime, last_tx);
+            if (this.hasError(result)){
+                return {
+                    datasetResult: result,
+                    datasetRefId,
+                    publicationTime
+                };
+            }
+            last_tx = result.last_tx;
         }
         return {datasetResult: {data: 'OK', status: 200}, datasetRefId, publicationTime, nbChunks};
     };
 
     static getErrorMessage = (koResult) => {
-        return {message: koResult.data || `an error ${koResult.status} occurred`, error: true};
+        return {message: koResult.data || koResult.message || `an error ${koResult.status} occurred`, error: true};
     };
 
-    static hasError = (result) => result.data !== 'OK' || result.status !== 200;
+    static hasError = result => result && result.status ? result.status !== 200 : !result;
 
     static publishModel = async (modelItem, datasetRefId, publicationTime, nbChunks) => {
         const communityModel = {
@@ -218,13 +230,17 @@ class ArweaveService {
         return (result && result.data) || null;
     };
 
-    static getModelDatasetItem = async (id) => {
-        const items = await this.getItems(AR_MODEL_DATASET_TAG_NAME, AR_MODEL_DATASET_ID_TAG_NAME, id, false);
-        const parsedItems = items.map(item => JSON.parse(item));
-        parsedItems.sort((a, b) => b.chunkIndex < a.chunkIndex ? 1 : -1);
-        const chunks = parsedItems.map(item => item.chunk);
-        const joined = chunks.join('');
-        return JSON.parse(joined);
+    static getModelDatasetItem = async (id, nbChunks) => {
+        const datasetPackets = await this.doWithRetry(async () => {
+            const packets = await this.getItems(AR_MODEL_DATASET_TAG_NAME, AR_MODEL_DATASET_ID_TAG_NAME, id, false);
+            if(packets.length < nbChunks) throw new Error('Incomplete dataset');
+            return packets;
+        }, 15, 1000);
+
+        const parsedPackets = datasetPackets.map(item => JSON.parse(item));
+        parsedPackets.sort((a, b) => b.chunkIndex < a.chunkIndex ? 1 : -1);
+        const chunks = parsedPackets.map(item => item.chunk);
+        return JSON.parse(chunks.join(''));
     };
 
     static getModelItem = async (modelTransactionId) => {

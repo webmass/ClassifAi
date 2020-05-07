@@ -49,7 +49,7 @@ const ModelDetails = () => {
 
     useEffect(() => {
         isMountedRef.current = true;
-        const showNoTrainingInfo = () => setResult(isCommunityModel ? 'Training data still publishing...' : 'hmm...Teach me first !');
+        const showNoTrainingInfo = () => setResult(isCommunityModel ? 'Still publishing data or data temporarily unavailable' : 'hmm...Teach me first !');
         const handleRestoreFailed = () => {
             if(isMountedRef.current) {
                 setIsDatasetLoadingEnded(true);
@@ -67,7 +67,7 @@ const ModelDetails = () => {
         };
         if(modelItem.id){
             const datasetRefId = modelItem.datasetRefId || modelItem.id;
-            ModelService.restoreTraining(datasetRefId, handleRestoreSuccess, handleRestoreFailed);
+            ModelService.restoreTraining(datasetRefId, modelItem.nbChunks, handleRestoreSuccess, handleRestoreFailed);
         }
         const workWithCamera = async () => {
             await initWebcam();
@@ -84,7 +84,7 @@ const ModelDetails = () => {
         };
         workWithCamera();
         return () => isMountedRef.current = false;
-    }, [modelItem.id, modelItem.datasetRefId, isCommunityModel, initWebcam]);
+    }, [modelItem.id, modelItem.datasetRefId, modelItem.nbChunks, isCommunityModel, initWebcam]);
 
     if (isLoading){
         return <Message.Loading/>;
