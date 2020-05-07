@@ -5,7 +5,7 @@ import AppContext from 'app/AppContext';
 import ArweaveService from 'services/ArweaveService';
 import TensorFlowService from 'services/TensorFlowService';
 import DialogService from 'services/DialogService';
-import { T_MODEL_ITEM } from 'types';
+import { T_MODEL_ITEM } from 'app-prop-types';
 import { AR_MIN_TRAINING_REQUIRED } from 'app/constants';
 
 const ModelPublishBar = ({modelItem}) => {

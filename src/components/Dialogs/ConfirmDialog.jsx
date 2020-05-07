@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import LottieAnimation from 'components/LottieAnimation/LottieAnimation';
 import SimpleDialog from 'components/Dialogs/SimpleDialog';
 import PropTypes from 'prop-types';
-import { T_ANIMATION, T_CHILDREN } from 'types';
+import { T_ANIMATION, T_CHILDREN } from 'app-prop-types';
 
 const defaultSuccessAnimationOptions = {animationName: 'checkmark', width: 100, height: 100};
 const defaultLoadingAnimationOptions = {animationName: 'progress-bar', width: 100, height: 100};

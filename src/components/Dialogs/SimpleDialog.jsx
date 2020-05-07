@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from 'components/Dialogs/Dialogs.module.scss';
-import { T_CHILDREN } from 'types';
+import { T_CHILDREN } from 'app-prop-types';
 
 const SimpleDialog = ({children}) => {
     return (

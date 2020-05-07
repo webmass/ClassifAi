@@ -3,7 +3,7 @@ import { ArrowBack } from '@material-ui/icons';
 import React from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import PropTypes from 'prop-types';
-import { T_CHILDREN } from 'types';
+import { T_CHILDREN } from 'app-prop-types';
 import useRouting from 'hooks/useRouting';
 
 const useStyles = (titleAlign) => makeStyles(() => ({

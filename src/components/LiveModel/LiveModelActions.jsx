@@ -7,7 +7,7 @@ import * as tf from '@tensorflow/tfjs';
 import { getModelFormRoute } from 'services/RoutingService';
 import DialogService from 'services/DialogService';
 import PropTypes from 'prop-types';
-import { T_MODEL_ITEM } from 'types';
+import { T_MODEL_ITEM } from 'app-prop-types';
 import useRouting from 'hooks/useRouting';
 import Message from 'components/Message/Message';
 

@@ -4,7 +4,7 @@ import styles from './LiveModel.module.scss';
 import Message from 'components/Message/Message';
 import LottieAnimation from 'components/LottieAnimation/LottieAnimation';
 import LiveModelActions from 'components/LiveModel/LiveModelActions';
-import { T_CHILDREN, T_MODEL_ITEM } from 'types';
+import { T_CHILDREN, T_MODEL_ITEM } from 'app-prop-types';
 import PropTypes from 'prop-types';
 
 const LiveModel = ({

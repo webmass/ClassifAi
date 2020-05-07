@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { getModelDetailsRoute } from 'services/RoutingService';
 import ModelService from 'services/ModelService';
 import DialogService from 'services/DialogService';
-import { T_MODEL_ITEM } from 'types';
+import { T_MODEL_ITEM } from 'app-prop-types';
 import PropTypes from 'prop-types';
 import useRouting from 'hooks/useRouting';
 

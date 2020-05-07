@@ -1,7 +1,7 @@
 import React from 'react';
 import {List, ListItem} from '@material-ui/core';
 import CategoryListItem from 'components/Category/CategoryListItem/CategoryListItem';
-import { T_CATEGORIES } from 'types';
+import { T_CATEGORIES } from 'app-prop-types';
 
 const CategoryList = ({ categories }) => {
     const listItems = categories.map(category => {

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import LottieAnimation from 'components/LottieAnimation/LottieAnimation';
 import styles from './Message.module.scss'
-import { T_CHILDREN } from 'types';
+import { T_CHILDREN } from 'app-prop-types';
 
 const MessageContent = ({type, animationName, height, width, loop, children}) => {
     return (

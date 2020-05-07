@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import Lottie from 'react-lottie';
-import { T_LOTTIE_ANIMATION } from 'types';
+import { T_LOTTIE_ANIMATION } from 'app-prop-types';
 
 const LottieAnimation = ({
     animationName, height, width, loop, autoplay, onComplete, rendererSettings

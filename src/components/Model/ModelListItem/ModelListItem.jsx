@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import styles from './ModelListItem.module.scss';
 import { getModelDetailsRoute } from 'services/RoutingService';
-import { T_MODEL_ITEM } from 'types';
+import { T_MODEL_ITEM } from 'app-prop-types';
 import useRouting from 'hooks/useRouting';
 import moment from 'moment';
 

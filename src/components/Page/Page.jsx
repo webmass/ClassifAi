@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './Page.module.scss'
 import Message from 'components/Message/Message';
 import classnames from 'classnames';
-import { T_CHILDREN } from 'types';
+import { T_CHILDREN } from 'app-prop-types';
 import PropTypes from 'prop-types';
 import TopBar from 'components/TopBar/TopBar';
 import { ROUTES } from 'app/constants';

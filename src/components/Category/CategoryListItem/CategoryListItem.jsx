@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import StyledTextField from 'components/StyledTextField/StyledTextField';
 import ModelContext from 'components/Model/ModelContext';
-import { T_CATEGORY } from 'types';
+import { T_CATEGORY } from 'app-prop-types';
 
 const CategoryListItem = ({category}) => {
     const {formData, setFormData, renamedCategories, setRenamedCategories} = useContext(ModelContext);
