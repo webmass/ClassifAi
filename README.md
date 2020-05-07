@@ -1,12 +1,12 @@
 # ClassifAi Live
-ClassifAi Live is an __open-source__ Image Classifier IA web app project, made for __Arweave's open web hackathon__.
+ClassifAi Live is an open-source __Image Classifier IA web app__ project, made for __Arweave's open web hackathon__.
 
-![intro-gif](readme_assets/intro.gif)
+<kbd>![intro-gif](readme_assets/intro.gif)</kbd>
 
 ## What can it do ?
 It can recognizes images and classify them into different categories.
 
-![thumb-demo-gif](readme_assets/thumb-demo.gif)
+<kbd>![thumb-demo-gif](readme_assets/thumb-demo.gif)</kbd>
 
 ## How does it work ?
 Users create "models" with at least two categories and then "train" ClassifyAi to recognize these categories by feeding it images from the camera.
@@ -28,8 +28,8 @@ ClassifAi Live works on both computers and mobile devices, it required access to
 
 The publishing process may take some time to be fully completed, the published model will only be usable after the process is fully done (from a few minutes to hours depending on the level of training of the model).
 
-![publish-gif](readme_assets/publish.gif)
-![publish-started-gif](readme_assets/publish-started.gif)
+<kbd>![publish-gif](readme_assets/publish.gif)</kbd>
+<kbd>![publish-started-gif](readme_assets/publish-started.gif)</kbd>
 
 ## Technologies
 The main technologies and frameworks used in this project are :
