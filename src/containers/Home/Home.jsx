@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { Typography, Grid, Container } from '@material-ui/core';
-import { Add, ArrowRight, Person, PersonOutline } from '@material-ui/icons';
+import { Add, ArrowRight, Person, PersonOutline, GitHub } from '@material-ui/icons';
 import Page from 'components/Page/Page';
 import styles from './Home.module.scss';
 import { APP_NAME, DB_INTRO_DONE_SETTING, ROUTES } from 'app/constants';
@@ -14,6 +14,7 @@ import Button from '@material-ui/core/Button';
 import Database from 'services/Database';
 import { updateLastSearchValue } from 'store/slices/searchSlice';
 import useRouting from 'hooks/useRouting';
+import Link from '@material-ui/core/Link';
 
 const Home = ({updateLastSearchValue, lastSearchValue}) => {
     const {wallet} = useContext(AppContext);
@@ -79,6 +80,11 @@ const Home = ({updateLastSearchValue, lastSearchValue}) => {
                     </Grid>
                 </Grid>
             </Container>
+            <div className={styles.footer}>
+                <Link color='primary' href='https://github.com/webmass/ClassifAi' target='_blank'>
+                    <GitHub/>
+                </Link>
+            </div>
         </Page>
     );
 };
