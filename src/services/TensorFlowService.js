@@ -14,7 +14,7 @@ class TensorFlowService {
             alpha,
             modelUrl: hasCachedBaseModel ? this.#localBaseModelPath : undefined
         });
-        if(hasCachedBaseModel) {
+        if(!hasCachedBaseModel) {
             this.#mobilenet.model.save('indexeddb://base_model');
         }
     };
