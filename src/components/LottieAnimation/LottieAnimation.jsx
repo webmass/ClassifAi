@@ -9,9 +9,10 @@ const LottieAnimation = ({
     const isMountedRef = useRef(true);
 
     useEffect(() => {
+        isMountedRef.current = true;
         const loadAnimationData = async () => {
             const animationData = await import(`../../assets/animations/${animationName}`);
-            // if (!isMountedRef.current) return;
+            if (!isMountedRef.current) return;
             setAnimationData(animationData.default);
         };
         loadAnimationData();
