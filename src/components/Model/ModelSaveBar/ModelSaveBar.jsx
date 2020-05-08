@@ -42,7 +42,8 @@ const ModelSaveBar = ({isFormValid, formData, renamedCategories, saveModelItem})
     const handleSaveSuccess = (savedModel) => {
         setIsSaving(false);
         const onClose = () => routing.push(getModelDetailsRoute(savedModel.id));
-        DialogService.showSuccess(`Model ${formData.id ? 'updated' : 'created'}`, onClose, 1500);
+        const withIdLabel = formData.isCommunityModel ? 'saved to my models' : 'updated';
+        DialogService.showSuccess(`Model ${formData.id ? withIdLabel : 'created'}`, onClose, 1500);
     };
 
     const handleError = (e) => {
