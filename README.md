@@ -1,7 +1,10 @@
 # ClassifAi Live
-ClassifAi Live is an open-source __Image Classifier IA web app__ project, made for __Arweave's open web hackathon__.
+ClassifAi Live is an open-source __Image Classifier IA Progressive Web App__ project, made for __Arweave's open web hackathon__.
 
 <kbd>![intro-gif](readme_assets/intro.gif)</kbd>
+
+## Demo link
+[ClassifAi Live](https://arweave.net/haHXU9HT5xnMLmjFP6mjvZwYYRO4mKjVTytTmOCZWEs)
 
 ## Progressive Web App and Offline
 This is a __[Progressive Web App](https://en.wikipedia.org/wiki/Progressive_web_application)__, meaning that it has everything needed to be [installed](https://support.google.com/chrome/answer/9658361?co=GENIE.Platform%3DDesktop&hl=en&oco=1) and used as a "normal app" on your device, if installed __ClassifAi Live__ will work even if you're __offline__ !
@@ -16,7 +19,7 @@ Users create "models" with at least two categories and then "train" ClassifyAi t
 Moreover logged in users with an Arweave's keyfile can share their models with the community or use a model made by the community.
 
 ## How to use ClassifAi Live
-ClassifAi Live works on both computers and mobile devices, it required access to the camera.
+ClassifAi Live works on both computers and mobile devices, it requires access to the camera.
 
 ### The Main Features
 * Use the Example model or create a new one with at least two categories
@@ -27,7 +30,7 @@ ClassifAi Live works on both computers and mobile devices, it required access to
 ### The Publish and Community features
 * Go to the account page by clicking the "person" icon on the home page
 * Drop your arweave's keyfile in the drop zone to log in
-* You know have access to the community models and to the publish feature
+* You now have access to the community models and to the publish feature
 
 The publishing process may take some time to be fully completed, the published model will only be usable after the process is fully done (from a few minutes to hours depending on the level of training of the model).
 

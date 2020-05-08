@@ -35,7 +35,7 @@ export const DB_EXAMPLE_ADDED_SETTING = 'exampleAdded';
 // Arweave
 export const AR_MIN_TRAINING_REQUIRED = 100;
 export const AR_APP_NAME = APP_NAME.replace(/\s+/g, '');
-export const AR_APP_VERSION = '0';
+export const AR_APP_VERSION = '1';
 export const AR_APP_NAME_TAG = {name: 'App-Name', value: AR_APP_NAME};
 export const AR_APP_VERSION_TAG = {name: 'App-Version', value: AR_APP_VERSION};
 export const AR_DEFAULT_TAGS = [
