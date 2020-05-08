@@ -45,12 +45,12 @@ class ArweaveService {
         };
     };
 
-    static doWithRetry = async(fun, maxAttempts = 100, delayMs = 1000, nbAttempts = 0) => {
+    static doWithRetry = async(fun, maxRetries = 100, delayMs = 1000, nbRetry = 0) => {
         const result = await fun().catch((e) => e.status ? e : {status: 500, message: e.message});
-        if (this.hasError(result) && nbAttempts < maxAttempts) {
+        if (this.hasError(result) && nbRetry < maxRetries) {
             return new Promise(async resolve => {
                 setTimeout(async () => {
-                    resolve(await this.doWithRetry(fun, maxAttempts, delayMs, ++nbAttempts));
+                    resolve(await this.doWithRetry(fun, maxRetries, delayMs, ++nbRetry));
                 }, delayMs);
             });
         }
@@ -235,7 +235,7 @@ class ArweaveService {
             const packets = await this.getItems(AR_MODEL_DATASET_TAG_NAME, AR_MODEL_DATASET_ID_TAG_NAME, id, false);
             if(packets.length < nbChunks) throw new Error('Incomplete dataset');
             return packets;
-        }, 15, 1000);
+        }, 5, 1000);
 
         const parsedPackets = datasetPackets.map(item => JSON.parse(item));
         parsedPackets.sort((a, b) => b.chunkIndex < a.chunkIndex ? 1 : -1);
