@@ -3,7 +3,10 @@ ClassifAi Live is an open-source __Image Classifier IA web app__ project, made f
 
 <kbd>![intro-gif](readme_assets/intro.gif)</kbd>
 
-## What can it do ?
+## Progressive Web App and Offline
+This is a __[Progressive Web App](https://en.wikipedia.org/wiki/Progressive_web_application)__, meaning that it has everything needed to be [installed](https://support.google.com/chrome/answer/9658361?co=GENIE.Platform%3DDesktop&hl=en&oco=1) and used as a "normal app" on your device, if installed __ClassifAi Live__ will work even if you're __offline__ !
+
+## What can ClassifAi Live do ?
 It can recognizes images and classify them into different categories.
 
 <kbd>![thumb-demo-gif](readme_assets/thumb-demo.gif)</kbd>
