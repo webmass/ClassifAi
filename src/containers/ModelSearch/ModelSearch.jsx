@@ -87,7 +87,7 @@ const ModelSearch = ({localModels, communityModels, lastSearchValue, updateLastS
                 <span className={styles.searchInputContainer}>
                     <StyledTextField
                         value={searchValue}
-                        autoFocus
+                        autoFocus={!!searchValue}
                         placeholder={`Search in ${isCommunitySearch ? 'community' : 'my'} models`}
                         className={styles.searchInput}
                         onChange={handleSearch}
